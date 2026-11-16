@@ -35,7 +35,7 @@ Release Please reads the Conventional Commits on `main` and keeps one release pu
 
 The private key of the release GitHub App is the secret `RELEASE_APP_PRIVATE_KEY` of the environment `release`, which only `main` can use. The client id is the variable `RELEASE_APP_CLIENT_ID`. Two tag rulesets protect the tags `v*`. `release-tags` blocks deletion, force pushes and updates for everyone, and `release-tags-creation` lets only the release App create a tag. Releases are immutable.
 
-The release pull request is opened by the App, so the owner can approve it, or merge it through the bypass team like any other pull request. Its title is `chore: release X.Y.Z`. Commits of the types `ci`, `docs`, `chore` and `build` do not start a release, and the first `fix` or `feat` after the commit in `bootstrap-sha` does.
+The release pull request is opened by the App, so the owner can approve it, or merge it through the bypass team like any other pull request. Its title is `chore: release X.Y.Z`. Commits of the types `ci`, `docs`, `chore` and `build` do not start a release, and the first `fix` or `feat` after the commit in `bootstrap-sha` does. While the version is below 1.0.0, a breaking change raises the minor version and not the major one, because of `bump-minor-pre-major`. The release to 1.0.0 is a decision of the owner.
 
 ## pre-commit.ci
 

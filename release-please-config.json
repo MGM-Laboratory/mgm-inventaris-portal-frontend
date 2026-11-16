@@ -4,6 +4,7 @@
   "packages": {
     ".": {
       "release-type": "node",
+      "bump-minor-pre-major": true,
       "package-name": "mgm-inventaris-portal-frontend",
       "include-v-in-tag": true,
       "changelog-path": "CHANGELOG.md",
