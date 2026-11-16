@@ -14,6 +14,7 @@ menunggu jawaban.
 [![Security](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/security.yaml/badge.svg)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/security.yaml)
 [![Config lint](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/config.yaml/badge.svg)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/config.yaml)
 
+[![License](https://img.shields.io/github/license/MGM-Laboratory/mgm-inventaris-portal-frontend)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/blob/main/LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -118,3 +119,7 @@ docs/             Dokumentasi CI/CD
 ## Berkontribusi dan keamanan
 
 Baca [`CONTRIBUTING.md`](CONTRIBUTING.md) sebelum membuka pull request. Laporkan celah keamanan secara pribadi sesuai [`SECURITY.md`](SECURITY.md) dan jangan membuka isu publik. Aturan perilaku ada di [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+
+## Lisensi
+
+GNU General Public License v3.0. Lihat [`LICENSE`](LICENSE).
