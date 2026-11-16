@@ -249,7 +249,7 @@ function Assets() {
                         Lihat
                       </Link>
                       <Link
-                        href={`/admin/aset/${u.tag}/ubah`}
+                        href={`/admin/aset/${encodeURIComponent(u.tag)}/ubah`}
                         className={`${buttonClass("secondary", "sm")} ml-1`}
                       >
                         Ubah
