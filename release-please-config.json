@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "487f422d16f32958179cca1142ba771fc5dcd322",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "mgm-inventaris-portal-frontend",
+      "include-v-in-tag": true,
+      "changelog-path": "CHANGELOG.md",
+      "include-component-in-tag": false
+    }
+  }
+}
