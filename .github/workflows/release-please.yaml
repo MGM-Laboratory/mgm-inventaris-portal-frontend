@@ -23,7 +23,7 @@ jobs:
     permissions: {}
     steps:
       # A tag or pull request created with the default GITHUB_TOKEN does not start other workflows.
-      # The token of the release GitHub App does, so the release PR runs CI and the new tag runs the Docker workflow.
+      # The token of the release GitHub App does, so the release PR runs CI and the new tag can start other workflows.
       # The App also makes the release commits, so they no longer carry a personal account, and it is the bypass actor of the tag creation ruleset.
       - name: Create a token for the release app
         id: app-token
