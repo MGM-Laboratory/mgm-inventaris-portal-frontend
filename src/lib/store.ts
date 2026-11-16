@@ -156,15 +156,15 @@ const RESERVING: TicketStatus[] = [
   "terlambat",
 ];
 
+/** Tanggal hari ini di Asia/Jakarta, karena aturan tanggal ambil memakai zona itu. */
 export function todayIso() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date());
 }
 
 export function endDateIso(t: Pick<Ticket, "pickupDate" | "durationDays" | "approvedDurationDays">) {
-  const d = new Date(`${t.pickupDate}T00:00:00`);
-  d.setDate(d.getDate() + (t.approvedDurationDays ?? t.durationDays));
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const d = new Date(`${t.pickupDate}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + (t.approvedDurationDays ?? t.durationDays));
+  return d.toISOString().slice(0, 10);
 }
 
 /** Status yang ditampilkan: tiket dipinjam yang lewat tenggat menjadi terlambat. */
