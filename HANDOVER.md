@@ -46,7 +46,7 @@ data contoh di browser.
 
 | Apa | Di mana |
 | --- | --- |
-| Kode | https://github.com/Zxaviers/mgm-inventaris-portal (cabang `main`, publik) |
+| Kode | https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend (cabang `main`, publik) |
 | Demo | https://mgm-inventaris-portal.vercel.app (Vercel, diperbarui otomatis tiap push ke `main`) |
 | PRD | https://claude.ai/artifact/FcySRnZfwzYLig23XKUVgc (dokumen Claude; spesifikasi lengkap, 11 bagian, 2 diagram) |
 | Paket serah terima | `labmgm-portal-serah-terima.zip` (kode tanpa `node_modules`) |
