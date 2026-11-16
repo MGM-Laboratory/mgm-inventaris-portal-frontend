@@ -50,7 +50,7 @@ function Form() {
         <input
           id="nomor"
           value={nomor}
-          onChange={(e) => setNomor(e.target.value)}
+          onChange={(e) => setNomor(e.target.value.toUpperCase())}
           placeholder="MGM-2611-0001-K7QX"
           autoComplete="off"
           className={`${inputClass} tnum font-mono`}
