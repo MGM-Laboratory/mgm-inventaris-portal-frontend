@@ -1,6 +1,8 @@
 # The naming of the files of the repository, checked by the File names job of config.yaml and described in docs/ci-cd.md.
 # A file name has no extension rule of its own when it has none at all, such as Dockerfile, LICENSE and CODEOWNERS.
-ls:
+# The rules every folder shares. ls-lint does not merge a folder entry with the rules above it, so every folder entry below
+# repeats them through the merge key. Without that, a file such as docs/BadName.md or .github/tools/BadName.sh passes unchecked.
+shared: &shared
   # a folder is lowercase words joined by hyphens, and a leading dot marks the folder of a tool. The Next.js router adds a dynamic
   # segment such as [tag], [...slug] or [[...slug]], a private folder that starts with an underscore, a route group such as (site)
   # and a slot such as @modal. The pattern is grouped, because ls-lint puts the anchors around the whole text.
@@ -14,22 +16,39 @@ ls:
   # the community files in capitals such as README.md and CODE_OF_CONDUCT.md are allowed next to kebab case
   .md: kebab-case | SCREAMING_SNAKE_CASE
 
-  # a YAML file ends with .yml. ls-lint counts the files of one folder for an exists rule, so every folder that holds YAML
-  # files needs its own line. Add a line here when a new folder gets a YAML file.
+# A YAML file ends with .yml, also with more dots in the name such as compose.production.yaml. ls-lint counts the files of one
+# folder for an exists rule, so every folder that holds YAML files needs its own entry. Add one here when a new folder gets a
+# YAML file.
+yaml-ban: &yaml-ban
   .yaml: exists:0
+  .*.yaml: exists:0
+  .*.*.yaml: exists:0
+  .*.*.*.yaml: exists:0
+
+ls:
+  <<: [*shared, *yaml-ban]
   .github:
-    .yaml: exists:0
+    <<: [*shared, *yaml-ban]
   .github/*:
-    .yaml: exists:0
+    <<: [*shared, *yaml-ban]
   .github/*/*:
-    .yaml: exists:0
+    <<: [*shared, *yaml-ban]
+  .github/*/*/*:
+    <<: [*shared, *yaml-ban]
   docs:
-    .yaml: exists:0
+    <<: [*shared, *yaml-ban]
+  docs/*:
+    <<: [*shared, *yaml-ban]
+  docs/*/*:
+    <<: [*shared, *yaml-ban]
 
   # a workflow ends with .yaml and not .yml, and the same holds for a name with more dots such as check.config.yml
   .github/workflows:
+    <<: *shared
     .yml: exists:0
     .*.yml: exists:0
+    .*.*.yml: exists:0
+    .*.*.*.yml: exists:0
     .yaml: kebab-case
 
 ignore:
