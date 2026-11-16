@@ -39,11 +39,11 @@ The release pull request is opened by the App, so the owner can approve it, or m
 
 ## pre-commit.ci
 
-The pre-commit.ci GitHub app runs the hooks of `.pre-commit-config.yaml` on every pull request. They check for large files, case conflicts, broken JSON, TOML and YAML, merge conflict markers, symbolic links that do not resolve, private keys, a final newline, mixed line endings and trailing whitespace. The run is not a required check. `autofix_prs` is off, because the ruleset only accepts signed commits and the app would push an unsigned fix. A failing run needs a fix by hand. The hooks update weekly through `autoupdate_schedule`.
+The pre-commit.ci GitHub app runs the hooks of `.pre-commit-config.yaml` on every pull request. They check for large files, case conflicts, broken JSON, TOML and YAML, merge conflict markers, symbolic links that do not resolve, private keys, a final newline, mixed line endings and trailing whitespace. The run is not a required check. `autofix_prs` is off, because the ruleset only accepts signed commits and the app would push an unsigned fix. A failing run needs a fix by hand. The app opens no update pull requests (`autoupdate_schedule: never`), because they would carry unsigned commits and fail the required checks `Conventional commits` and `PR format`. Renovate moves the hook revisions through its `pre-commit` manager, with the commit type `ci`.
 
 ## Naming rules
 
-`.ls-lint.yml` sets the naming of files and folders. Folders are lowercase words joined by hyphens, with the Next.js forms for a dynamic segment, a route group, a private folder and a slot. Files are kebab case, and Markdown files may also use capitals such as `README.md`. Workflows end with `.yaml` and every other YAML file ends with `.yml`.
+`.ls-lint.yml` sets the naming of files and folders. Folders are lowercase words joined by hyphens, with the Next.js forms for a dynamic segment, a route group, a private folder and a slot. Files are kebab case, and Markdown files may also use capitals such as `README.md`. Workflows end with `.yaml` and every other YAML file ends with `.yml`, except `.pre-commit-config.yaml`, which pre-commit reads by that name.
 
 ## Dependency updates
 

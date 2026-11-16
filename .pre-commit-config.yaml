@@ -1,6 +1,6 @@
 ci:
   autofix_prs: false
-  autoupdate_schedule: weekly
+  autoupdate_schedule: never
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
