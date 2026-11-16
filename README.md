@@ -6,9 +6,6 @@ tampilan dan alur, dengan data contoh di browser. Belum ada backend, Snipe-IT,
 Keycloak, atau pengiriman email.
 
 Untuk mencoba semua alurnya langkah demi langkah, ikuti [handson.md](handson.md).
-Untuk yang akan memasang dan menyambungkannya, baca [HANDOVER.md](HANDOVER.md):
-daftar bagian yang masih palsu, keputusan yang sudah dibuat, dan yang masih
-menunggu jawaban.
 
 [![CI](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/ci.yaml/badge.svg)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/ci.yaml)
 [![Security](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/security.yaml/badge.svg)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/security.yaml)
@@ -100,7 +97,6 @@ Prototipe ini tidak membaca variabel lingkungan dan tidak punya berkas `.env`. S
 
 ## Dokumentasi
 
-- [`HANDOVER.md`](HANDOVER.md) menjelaskan arsitektur sasaran, kontrak API usulan, sambungan ke Snipe-IT, pemasangan, dan pertanyaan yang masih terbuka.
 - [`handson.md`](handson.md) memandu mencoba semua alur langkah demi langkah.
 - [`docs/ci-cd.md`](docs/ci-cd.md) mencantumkan workflow CI dan pemeriksaan yang diwajibkan.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md) dan [`ACCESSIBILITY.md`](ACCESSIBILITY.md) memuat aturan kontribusi, pelaporan keamanan, dan pernyataan aksesibilitas.

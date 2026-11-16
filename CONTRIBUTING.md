@@ -1,6 +1,6 @@
 # Contributing to the LabMGM inventory portal frontend
 
-Thanks for taking the time to contribute. This repository is the frontend of the LabMGM inventory and loan portal. It is a Next.js app that runs on sample data in the browser. The backend is planned as a separate repository. Read `README.md` for what exists and `HANDOVER.md` for what is still fake and what the backend has to build.
+Thanks for taking the time to contribute. This repository is the frontend of the LabMGM inventory and loan portal. It is a Next.js app that runs on sample data in the browser. The backend is planned as a separate repository. Read `README.md` for what exists.
 
 ## Before you change code
 

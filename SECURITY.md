@@ -22,6 +22,6 @@ You can expect an initial response within 7 days. We keep you updated while the 
 
 ## Scope notes
 
-- The sample data and the demo mode of the prototype are not secrets. The demo bar lets anyone become an Admin on purpose, and `HANDOVER.md` lists it as something to remove before real use.
+- The sample data and the demo mode of the prototype are not secrets. The demo bar lets anyone become an Admin on purpose, and it has to be removed before real use.
 - Automated scanning that could degrade the availability of a live deployment is not authorized. Run the app locally instead.
 - Findings from the automated tooling in this repository (CodeQL, dependency review, secret scanning, Trivy, OSSF Scorecard) are triaged the same way as external reports.

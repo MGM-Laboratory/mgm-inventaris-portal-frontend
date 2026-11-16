@@ -226,4 +226,4 @@ Hal yang sebaiknya Anda catat selama mencoba:
 
 Login Keycloak, email sungguhan, data Snipe-IT, dan keamanan sungguhan. Peran
 Admin bisa dipilih siapa saja lewat bar mode contoh, dan itu sengaja hanya untuk
-tahap ini. Daftar lengkap bagian yang harus diganti ada di `HANDOVER.md`.
+tahap ini.
