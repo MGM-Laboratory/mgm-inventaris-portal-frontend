@@ -48,6 +48,7 @@ ls:
     .yml: exists:0
     .*.yml: exists:0
     .*.*.yml: exists:0
+    .*.*.*.yml: exists:0
     .yaml: kebab-case
 
 ignore:
