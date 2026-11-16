@@ -114,7 +114,7 @@ function AssetViewInner({ params }: { params: Promise<{ tag: string }> }) {
           <>
             {isAdmin ? (
               <Link
-                href={`/admin/aset/${unit.tag}/ubah`}
+                href={`/admin/aset/${encodeURIComponent(unit.tag)}/ubah`}
                 className={buttonClass("secondary")}
               >
                 Ubah aset
@@ -234,7 +234,7 @@ function AssetViewInner({ params }: { params: Promise<{ tag: string }> }) {
             <div className="flex flex-col items-center gap-3">
               <div className="rounded-lg border border-line bg-white p-2">
                 <QrCode
-                  value={`${window.location.origin}/aset/${unit.tag}`}
+                  value={`${window.location.origin}/aset/${encodeURIComponent(unit.tag)}`}
                   size={176}
                   label={`Kode QR untuk ${unit.tag}`}
                 />
