@@ -35,11 +35,15 @@ Release Please reads the Conventional Commits on `main` and keeps one release pu
 
 The private key of the release GitHub App is the secret `RELEASE_APP_PRIVATE_KEY` of the environment `release`, which only `main` can use. The client id is the variable `RELEASE_APP_CLIENT_ID`. Two tag rulesets protect the tags `v*`. `release-tags` blocks deletion, force pushes and updates for everyone, and `release-tags-creation` lets only the release App create a tag. Releases are immutable.
 
-The release pull request is opened by the App, so the owner can approve it, or merge it through the bypass team like any other pull request. Its title is `chore: release X.Y.Z`. Commits of the types `ci`, `docs`, `chore` and `build` do not start a release, and the first `fix` or `feat` after the commit in `bootstrap-sha` does.
+The release pull request is opened by the App, so the owner can approve it, or merge it through the bypass team like any other pull request. Its title is `chore: release X.Y.Z`. Commits of the types `ci`, `docs`, `chore` and `build` do not start a release, and the first `fix` or `feat` after the commit in `bootstrap-sha` does. While the version is below 1.0.0, a breaking change raises the minor version and not the major one, because of `bump-minor-pre-major`. The release to 1.0.0 is a decision of the owner.
+
+## pre-commit.ci
+
+The pre-commit.ci GitHub app runs the hooks of `.pre-commit-config.yaml` on every pull request. They check for large files, case conflicts, broken JSON, TOML and YAML, merge conflict markers, symbolic links that do not resolve, private keys, a final newline, mixed line endings and trailing whitespace. The run is not a required check. `autofix_prs` is off, because the ruleset only accepts signed commits and the app would push an unsigned fix. A failing run needs a fix by hand. The app has no setting to turn its update pull requests off, so `autoupdate_schedule` is `quarterly`, the longest interval that it allows. Its update pull request carries unsigned commits and fails the required checks `Conventional commits` and `PR format`, so close it. Renovate moves the hook revisions through its `pre-commit` manager, with the commit type `ci`.
 
 ## Naming rules
 
-`.ls-lint.yml` sets the naming of files and folders. Folders are lowercase words joined by hyphens, with the Next.js forms for a dynamic segment, a route group, a private folder and a slot. Files are kebab case, and Markdown files may also use capitals such as `README.md`. Workflows end with `.yaml` and every other YAML file ends with `.yml`.
+`.ls-lint.yml` sets the naming of files and folders. Folders are lowercase words joined by hyphens, with the Next.js forms for a dynamic segment, a route group, a private folder and a slot. Files are kebab case, and Markdown files may also use capitals such as `README.md`. Workflows end with `.yaml` and every other YAML file ends with `.yml`, except `.pre-commit-config.yaml`, which pre-commit reads by that name.
 
 ## Dependency updates
 

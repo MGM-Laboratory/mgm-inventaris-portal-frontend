@@ -41,5 +41,7 @@ ignore:
   - coverage
   # GitHub names the issue forms by what the person sees
   - .github/ISSUE_TEMPLATE
+  # pre-commit reads this exact name
+  - .pre-commit-config.yaml
   # GitHub reads the template by this name
   - .github/pull_request_template.md

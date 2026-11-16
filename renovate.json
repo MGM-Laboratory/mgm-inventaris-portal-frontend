@@ -29,7 +29,7 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["github-actions", "custom.regex"],
+      "matchManagers": ["github-actions", "custom.regex", "pre-commit"],
       "semanticCommitType": "ci"
     },
     {
@@ -80,5 +80,8 @@
       ]
     }
   ],
+  "pre-commit": {
+    "enabled": true
+  },
   "minimumReleaseAgeBehaviour": "timestamp-optional"
 }
