@@ -27,7 +27,7 @@ export default function TambahAsetPage() {
               {created.map((t) => (
                 <li key={t}>
                   <Link
-                    href={`/aset/${t}`}
+                    href={`/aset/${encodeURIComponent(t)}`}
                     className="tnum rounded-lg border border-line-strong bg-sunken px-3 py-1 font-mono text-[14px] text-link hover:underline"
                   >
                     {t}

@@ -224,7 +224,7 @@ function Assets() {
                     </td>
                     <td className={`${tdClass} whitespace-nowrap`}>
                       <Link
-                        href={`/aset/${u.tag}`}
+                        href={`/aset/${encodeURIComponent(u.tag)}`}
                         className="tnum font-mono font-medium text-link hover:underline"
                       >
                         {u.tag}
@@ -243,7 +243,7 @@ function Assets() {
                     <td className={`${tdClass} text-ink-2`}>{u.condition}</td>
                     <td className={`${tdClass} whitespace-nowrap text-right`}>
                       <Link
-                        href={`/aset/${u.tag}`}
+                        href={`/aset/${encodeURIComponent(u.tag)}`}
                         className={buttonClass("quiet", "sm")}
                       >
                         Lihat
