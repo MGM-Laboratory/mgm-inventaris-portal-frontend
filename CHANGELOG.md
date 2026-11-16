@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.2](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.1.1...v0.1.2) (2026-11-16)
+
+
+### Bug Fixes
+
+* **lint:** ban workflow names with four dots and a yml ending ([9b8a1f2](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/9b8a1f2d2d296eaf4a24d1127ec37e07a831ebc3))
+* **lint:** ban yaml names with four dots and say which folders the ban covers ([de405d5](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/de405d563b346298fc0ed704ac097e488fb4aae6))
+* **lint:** repeat the shared naming rules in every folder entry ([d087bf0](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/d087bf06635cea50f2c8bfeabcfe8cd2bc1ba663))
+* **lint:** repeat the shared naming rules in every folder entry and ban dotted yaml names ([ca2801c](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/ca2801ce3d61ea7af8aa1acc94a0cbfb1cb4488a))
+
 ## [0.1.1](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.1.0...v0.1.1) (2026-11-16)
 
 
