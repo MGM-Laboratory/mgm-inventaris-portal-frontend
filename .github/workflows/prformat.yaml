@@ -3,11 +3,12 @@ name: Pull request format
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, edited, labeled, unlabeled, assigned, unassigned]
+    types: [opened, synchronize, reopened, edited]
 
 # Like commits.yaml, a run is never cancelled and every run has a group of its own, because GitHub keeps a cancelled run of a required
 # check as unmet. The pull request is read when the run starts and not from the event, so a rerun checks what the pull request looks
-# like now. A change of a label or an assignee starts a new run, so a removal fails the check and an addition fixes it.
+# like now. A label or an assignee that was added after the last run is picked up by a rerun of the failed run. A newer passing run does
+# not replace an older failed run of the same commit, which a test on a pull request showed, so the failed run has to be rerun.
 concurrency:
   group: prformat-${{ github.run_id }}
   cancel-in-progress: false
