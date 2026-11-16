@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button, Field, PatternTile, inputClass } from "@/components/ui";
+import { Button, Field, Honeypot, PatternTile, honeypotFilled, inputClass } from "@/components/ui";
 import { EMAIL_VERIFICATION, setRole, signInGuest } from "@/lib/store";
 
 type Errors = Partial<Record<"name" | "nimNip" | "email", string>>;
@@ -15,8 +15,9 @@ export default function MasukPage() {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
-  function submitGuest(e: React.FormEvent) {
+  function submitGuest(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (honeypotFilled(e.currentTarget)) return;
     const next: Errors = {};
     if (name.trim().length < 3) next.name = "Isi nama lengkap.";
     if (!/^[0-9A-Za-z]{8,20}$/.test(nimNip.trim()))
@@ -87,7 +88,8 @@ export default function MasukPage() {
               Tanpa akun. Data ini dipakai sebagai kontak tiket.
               {EMAIL_VERIFICATION ? " Email diverifikasi dengan kode saat Anda mengajukan." : ""}
             </p>
-            <form onSubmit={submitGuest} noValidate className="flex flex-col gap-4">
+            <form onSubmit={submitGuest} noValidate className="relative flex flex-col gap-4">
+              <Honeypot />
               <Field label="Nama lengkap" htmlFor="name" error={errors.name}>
                 <input
                   id="name"

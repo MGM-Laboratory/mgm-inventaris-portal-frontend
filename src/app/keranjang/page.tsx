@@ -20,9 +20,11 @@ import {
   Button,
   EmptyState,
   Field,
+  Honeypot,
   LinkButton,
   PatternTile,
   Stepper,
+  honeypotFilled,
   inputClass,
 } from "@/components/ui";
 import { PageBody, PageHeader } from "@/components/page-layout";
@@ -69,8 +71,9 @@ export default function KeranjangPage() {
     );
   }
 
-  function submit(e: React.FormEvent) {
+  function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (honeypotFilled(e.currentTarget)) return;
     const next: Errors = {};
     if (purpose.trim().length < 5)
       next.purpose = "Tulis tujuan peminjaman dalam satu kalimat.";
@@ -158,9 +161,10 @@ export default function KeranjangPage() {
         <form
           onSubmit={submit}
           noValidate
-          className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-6 shadow-soft"
+          className="relative flex flex-col gap-5 rounded-2xl border border-line bg-surface p-6 shadow-soft"
           aria-label="Data peminjaman"
         >
+          <Honeypot />
           {isAdmin ? (
             <p className="rounded-xl border border-yellow/60 bg-yellow-50 px-4 py-3 text-sm">
               Anda melihat sebagai Admin. Ganti ke Guest atau Member di bar
