@@ -2,7 +2,7 @@
 
 ## Supported scope
 
-`MGM-Laboratory/mgm-inventaris-portal-frontend` is the frontend of the LabMGM inventory and loan portal. Today it is a prototype that keeps sample data in the browser and has no server, so it holds no real personal data. A backend, when it exists, gets its own policy.
+`MGM-Laboratory/mgm-inventaris-portal-frontend` is the frontend of the LabMGM inventory and loan portal. Today it is a prototype with no server. It keeps its data in the `localStorage` of each visitor's own browser and sends nothing anywhere. A form can still take a real name or email address that a visitor types, so use sample values while the portal is a prototype. A backend, when it exists, gets its own policy.
 
 ## Reporting a vulnerability
 

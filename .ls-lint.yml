@@ -14,12 +14,22 @@ ls:
   # the community files in capitals such as README.md and CODE_OF_CONDUCT.md are allowed next to kebab case
   .md: kebab-case | SCREAMING_SNAKE_CASE
 
-  # a YAML file ends with .yml, and the files that keep .yaml are listed in the ignore list below
+  # a YAML file ends with .yml. ls-lint counts the files of one folder for an exists rule, so every folder that holds YAML
+  # files needs its own line. Add a line here when a new folder gets a YAML file.
   .yaml: exists:0
+  .github:
+    .yaml: exists:0
+  .github/*:
+    .yaml: exists:0
+  .github/*/*:
+    .yaml: exists:0
+  docs:
+    .yaml: exists:0
 
-  # a workflow ends with .yaml and not .yml
+  # a workflow ends with .yaml and not .yml, and the same holds for a name with more dots such as check.config.yml
   .github/workflows:
     .yml: exists:0
+    .*.yml: exists:0
     .yaml: kebab-case
 
 ignore:
