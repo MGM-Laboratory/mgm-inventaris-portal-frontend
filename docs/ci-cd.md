@@ -43,7 +43,7 @@ The pre-commit.ci GitHub app runs the hooks of `.pre-commit-config.yaml` on ever
 
 ## Naming rules
 
-`.ls-lint.yml` sets the naming of files and folders. Folders are lowercase words joined by hyphens, with the Next.js forms for a dynamic segment, a route group, a private folder and a slot. Files are kebab case, and Markdown files may also use capitals such as `README.md`. Workflows end with `.yaml` and every other YAML file ends with `.yml`, except `.pre-commit-config.yaml`, which pre-commit reads by that name.
+`.ls-lint.yml` sets the naming of files and folders. Folders are lowercase words joined by hyphens, with the Next.js forms for a dynamic segment, a route group, a private folder and a slot. Files are kebab case in every folder, because each folder entry repeats the shared rules, and Markdown files may also use capitals such as `README.md`. Workflows end with `.yaml` and every other YAML file in the root, in `.github` and in `docs` ends with `.yml`, also when its name has more dots, except `.pre-commit-config.yaml`, which pre-commit reads by that name.
 
 ## Dependency updates
 
