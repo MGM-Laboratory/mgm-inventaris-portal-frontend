@@ -102,7 +102,7 @@ Prototipe ini tidak membaca variabel lingkungan dan tidak punya berkas `.env`. S
 
 - [`HANDOVER.md`](HANDOVER.md) menjelaskan arsitektur sasaran, kontrak API usulan, sambungan ke Snipe-IT, pemasangan, dan pertanyaan yang masih terbuka.
 - [`handson.md`](handson.md) memandu mencoba semua alur langkah demi langkah.
-- [`docs/ci-cd.md`](docs/ci-cd.md) mendaftar workflow CI dan pemeriksaan yang diwajibkan.
+- [`docs/ci-cd.md`](docs/ci-cd.md) mencantumkan workflow CI dan pemeriksaan yang diwajibkan.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md) dan [`ACCESSIBILITY.md`](ACCESSIBILITY.md) memuat aturan kontribusi, pelaporan keamanan, dan pernyataan aksesibilitas.
 
 ## Struktur proyek

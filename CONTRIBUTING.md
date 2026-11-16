@@ -1,6 +1,6 @@
 # Contributing to the LabMGM inventory portal frontend
 
-Thanks for taking the time to contribute. This repository is the frontend of the LabMGM inventory and loan portal. It is a Next.js app that runs on sample data in the browser. The backend will live in its own repository, `mgm-inventaris-portal-backend`. Read `README.md` for what exists and `HANDOVER.md` for what is still fake and what the backend has to build.
+Thanks for taking the time to contribute. This repository is the frontend of the LabMGM inventory and loan portal. It is a Next.js app that runs on sample data in the browser. The backend is planned as a separate repository. Read `README.md` for what exists and `HANDOVER.md` for what is still fake and what the backend has to build.
 
 ## Before you change code
 
@@ -28,8 +28,8 @@ Every pull request runs the checks below. The ruleset of the repository requires
 - **Conventional commits** reads every commit message and the title of the pull request.
 - **PR format** reads the branch name, the label, the assignee and the body.
 - **CI gate** runs lint and the production build.
-- **Config gate** runs actionlint, Zizmor, ls-lint for file names and the Renovate validator.
-- **Security gate** runs CodeQL, dependency review, gitleaks and a Trivy filesystem scan.
+- **Config gate** runs actionlint, Zizmor, ShellCheck, ls-lint for file names and the Renovate validator.
+- **Security gate** summarizes CodeQL, dependency review, gitleaks and a Trivy filesystem scan. Gitleaks and dependency review fail on a finding. CodeQL and Trivy send their findings to code scanning and fail only when the tool itself fails.
 
 A lint warning or a deprecation notice in the output of a check is still something to fix before the pull request is done, even when it does not turn the check red.
 
@@ -47,7 +47,7 @@ npm run dev -- -p 3004   # http://localhost:3004
 | `npm start`     | Serve the production build.                 |
 | `npm run lint`  | Run ESLint.                                 |
 
-Node 24 (`.nvmrc`) is used in CI. Next.js 16 needs Node 20.9 or newer. Do not run `npm run build` while `npm run dev` is running in the same folder, because both use `.next`.
+Node 24 (`.nvmrc`) is used in CI. Next.js 16 needs Node 20.9 or newer.
 
 ## Commit messages
 

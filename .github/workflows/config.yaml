@@ -60,6 +60,35 @@ jobs:
           docker run --rm -e GH_TOKEN -v "$PWD:/repo" -w /repo "$(bash ./.github/tools/image.sh zizmor)" \
             --no-progress --format github .
 
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Pull images through the Google mirror
+        uses: ./.github/actions/pull-images
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          token: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
+
+      # The files with the .sh ending are bash, and the settings are in .shellcheckrc
+      - name: ShellCheck
+        run: |
+          image="$(bash ./.github/actions/pull-images/pull.sh "$(bash ./.github/tools/image.sh shellcheck)")"
+          mapfile -d '' files < <(git ls-files -z '*.sh')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "The repository has no shell file yet."
+            exit 0
+          fi
+          docker run --rm -v "$PWD:/mnt:ro" -w /mnt "$image" "${files[@]}"
+
   names:
     name: File names
     runs-on: ubuntu-latest
@@ -114,7 +143,7 @@ jobs:
   gate:
     name: Config gate
     if: always()
-    needs: [actionlint, zizmor, names, renovate]
+    needs: [actionlint, zizmor, shellcheck, names, renovate]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}

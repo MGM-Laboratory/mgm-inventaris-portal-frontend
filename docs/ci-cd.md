@@ -9,12 +9,12 @@ The portal is not deployed from this repository yet. There is no Dockerfile, no 
 | Workflow       | Triggers                                              | What it does                                                                                                                    |
 | -------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | CI             | Pull request, push to `main`, manual                  | Installs with `npm ci`, runs ESLint and the production build. The build also type checks. The job `CI gate` summarizes the run. |
-| Config lint    | Pull request, push to `main`, manual                  | Actionlint, Zizmor, ls-lint for file names and the Renovate validator. The job `Config gate` summarizes the run.                |
-| Security       | Pull request, push to `main`, Mondays 03:00 UTC, manual | CodeQL, dependency review (pull requests only), gitleaks and a Trivy filesystem scan. OSSF Scorecard runs on the schedule and by hand. The job `Security gate` summarizes the run. |
+| Config lint    | Pull request, push to `main`, manual                  | Actionlint, Zizmor, ShellCheck, ls-lint for file names and the Renovate validator. The job `Config gate` summarizes the run.                |
+| Security       | Pull request, push to `main`, Mondays 03:00 UTC, manual | CodeQL, dependency review (pull requests only), gitleaks and a Trivy filesystem scan. Gitleaks and dependency review fail on a finding. CodeQL and Trivy send their findings to code scanning and fail only when the tool itself fails. OSSF Scorecard runs on the schedule and by hand. The job `Security gate` summarizes the run. |
 | Commit messages | Pull request                                         | Runs commitlint on every commit and checks that the title follows Conventional Commits. The job is named `Conventional commits`. |
 | Pull request format | Pull request                                     | Checks the branch name, the label, the assignee and that the body holds only bullets. The job is named `PR format`.            |
 
-The lint tools that run as Docker images (actionlint, Zizmor and gitleaks) are pinned by digest in `.github/tools/Dockerfile`, which nothing builds. Renovate reads that file, so a bump there is the bump the jobs use. The action `.github/actions/pull-images` sends image pulls through `mirror.gcr.io` and logs in to Docker Hub only when the repository variable `DOCKERHUB_USERNAME` and the secret `DOCKERHUB_PULL_TOKEN` exist.
+The lint tools that run as Docker images (actionlint, Zizmor, ShellCheck and gitleaks) are pinned by digest in `.github/tools/Dockerfile`, which nothing builds. Renovate reads that file, so a bump there is the bump the jobs use. The action `.github/actions/pull-images` sends image pulls through `mirror.gcr.io` and logs in to Docker Hub only when the secret `DOCKERHUB_PULL_TOKEN` exists. The username comes from the variable `DOCKERHUB_USERNAME`.
 
 ## Required checks
 
@@ -34,7 +34,7 @@ The ruleset needs no approving review and does not require code owner review.
 
 ## Dependency updates
 
-Renovate opens the pull requests through the Mend Renovate GitHub app, which an owner of the organization has to install on the repository. `renovate.json` sets a weekly run on Monday before 07:00 Asia/Jakarta, a minimum release age of 7 days, grouped minor and patch updates, and approval on the dependency dashboard for a major update. Dependabot alerts are on and Dependabot security updates are off, so only Renovate opens version pull requests.
+Renovate opens the pull requests through the Mend Renovate GitHub app, which an owner of the organization has to install on the repository. `renovate.json` sets a weekly run on Monday before 07:00 Asia/Jakarta, a minimum release age of 7 days, grouped minor and patch updates, and approval on the dependency dashboard for a major update of an npm package or of a tool version in a workflow. Major updates of GitHub Actions and of the lint tool images are not held. Dependabot alerts are on and Dependabot security updates are off, so only Renovate opens version pull requests.
 
 ## Not set up yet
 
