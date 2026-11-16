@@ -1,6 +1,7 @@
-# The owner is asked to review every pull request.
+# The owner is asked to review every pull request, and the ruleset `main-merge-and-approval` requires the approval of a
+# code owner, so a pull request from anyone else needs the approval of the owner.
 * @SyafaHadyan
 
 # Files that a bot rewrites on its own have no owner, so a pull request that changes only those files does not ask the owner
-# for a review. The last matching line wins.
+# for a review. The approval count of the ruleset still applies. The last matching line wins.
 /package-lock.json

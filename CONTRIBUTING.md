@@ -18,7 +18,7 @@ There is no `dev` branch. Every change to `main` goes through a pull request.
 1. Fork the repository, or branch directly if you are a collaborator.
 2. Make your change.
 3. Open a pull request against `main`. Keep it focused, because one discrete change is easier to review than a bundle.
-4. Wait for the checks below. They have to be green and every review thread has to be resolved.
+4. Wait for the checks below. They have to be green, every review thread has to be resolved and the code owner has to approve the pull request. This holds for every pull request, including one that you opened yourself.
 5. Only the maintainer merges, with a merge commit and never a squash or a rebase. Nobody can push to `main` directly, and every commit has to be signed.
 
 ## Required checks
