@@ -1,0 +1,35 @@
+# The naming of the files of the repository, checked by the File names job of config.yaml and described in docs/ci-cd.md.
+# A file name has no extension rule of its own when it has none at all, such as Dockerfile, LICENSE and CODEOWNERS.
+ls:
+  # a folder is lowercase words joined by hyphens, and a leading dot marks the folder of a tool. The Next.js router adds a dynamic
+  # segment such as [tag], [...slug] or [[...slug]], a private folder that starts with an underscore, a route group such as (site)
+  # and a slot such as @modal. The pattern is grouped, because ls-lint puts the anchors around the whole text.
+  .dir: regex:(\.?[a-z0-9]+(-[a-z0-9]+)*|\[{1,2}(\.\.\.)?[a-zA-Z0-9_]+\]{1,2}|_[a-z]+|\([a-z0-9-]+\)|@[a-z0-9-]+)
+
+  # every other file is the same, with dots for a variant such as next.config.ts or button.test.tsx
+  .*: kebab-case
+  .*.*: kebab-case
+  .*.*.*: kebab-case
+
+  # the community files in capitals such as README.md and CODE_OF_CONDUCT.md are allowed next to kebab case
+  .md: kebab-case | SCREAMING_SNAKE_CASE
+
+  # a YAML file ends with .yml, and the files that keep .yaml are listed in the ignore list below
+  .yaml: exists:0
+
+  # a workflow ends with .yaml and not .yml
+  .github/workflows:
+    .yml: exists:0
+    .yaml: kebab-case
+
+ignore:
+  - .git
+  - node_modules
+  - .next
+  - out
+  - build
+  - coverage
+  # GitHub names the issue forms by what the person sees
+  - .github/ISSUE_TEMPLATE
+  # GitHub reads the template by this name
+  - .github/pull_request_template.md
