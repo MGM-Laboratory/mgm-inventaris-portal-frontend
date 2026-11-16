@@ -13,7 +13,7 @@ The portal is not deployed from this repository yet. There is no Dockerfile and 
 | Security       | Pull request, push to `main`, Mondays 03:00 UTC, manual | CodeQL, dependency review (pull requests only), gitleaks and a Trivy filesystem scan. Gitleaks, dependency review and Trivy fail on a finding. Trivy fails on a CRITICAL or HIGH finding and also sends its findings to code scanning. CodeQL sends its findings to code scanning and fails only when the tool itself fails. OSSF Scorecard runs on the schedule and by hand. The job `Security gate` summarizes the run. |
 | Commit messages | Pull request                                         | Runs commitlint on every commit and checks that the title follows Conventional Commits. The job is named `Conventional commits`. |
 | Release Please | Push to `main`, manual | Opens and updates the release pull request, and creates the tag `vX.Y.Z` and the GitHub release when that pull request is merged. The job `Release PR and tag` builds a token from the release GitHub App `syafa-bot`. |
-| Pull request format | Pull request                                     | Checks the branch name, the label, the assignee and that the body holds only bullets. The job is named `PR format`.            |
+| Pull request format | Pull request | Checks the branch name, the label, the assignee, that the body holds only bullets and that the bullets match the commits, not counting merge commits. The job is named `PR format`. |
 
 The lint tools that run as Docker images (actionlint, Zizmor, ShellCheck and gitleaks) are pinned by digest in `.github/tools/Dockerfile`, which nothing builds. Renovate reads that file, so a bump there is the bump the jobs use. The action `.github/actions/pull-images` sends image pulls through `mirror.gcr.io` and logs in to Docker Hub only when the secret `DOCKERHUB_PULL_TOKEN` exists. The username comes from the variable `DOCKERHUB_USERNAME`.
 
@@ -35,7 +35,7 @@ Release Please reads the Conventional Commits on `main` and keeps one release pu
 
 The private key of the release GitHub App is the secret `RELEASE_APP_PRIVATE_KEY` of the environment `release`, which only `main` can use. The client id is the variable `RELEASE_APP_CLIENT_ID`. Two tag rulesets protect the tags `v*`. `release-tags` blocks deletion, force pushes and updates for everyone, and `release-tags-creation` lets only the release App create a tag. Releases are immutable.
 
-The release pull request is opened by the App, so the owner can approve it, or merge it through the bypass team like any other pull request. Its title is `chore: release X.Y.Z`. Commits of the types `ci`, `docs`, `chore` and `build` do not start a release, and the first `fix` or `feat` after the commit in `bootstrap-sha` does. While the version is below 1.0.0, a breaking change raises the minor version and not the major one, because of `bump-minor-pre-major`. The release to 1.0.0 is a decision of the owner.
+The release pull request is opened by the App, so the owner can approve it, or merge it through the bypass team like any other pull request. Its title is `chore(main): release X.Y.Z`. Commits of the types `ci`, `docs`, `chore` and `build` do not start a release, and the first `fix` or `feat` after the commit in `bootstrap-sha` does. While the version is below 1.0.0, a breaking change raises the minor version and not the major one, because of `bump-minor-pre-major`. The release to 1.0.0 is a decision of the owner.
 
 ## pre-commit.ci
 
