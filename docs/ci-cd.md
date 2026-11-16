@@ -2,7 +2,7 @@
 
 Every pull request and every merge to `main` of `github.com/MGM-Laboratory/mgm-inventaris-portal-frontend` runs the workflows below. `main` is protected. Every change goes through a branch, a pull request and the required checks, and it is merged with a merge commit, never squash or rebase.
 
-The portal is not deployed from this repository yet. There is no Dockerfile, no release automation and no image build. `HANDOVER.md` mentions a prototype demo on a separate Vercel project, which this repository does not configure. Those parts join when the deployment is decided, see `HANDOVER.md`.
+The portal is not deployed from this repository yet. There is no Dockerfile, no release automation and no image build. A prototype demo runs on a separate Vercel project, which this repository does not configure. Those parts join when the deployment is decided.
 
 ## GitHub Actions workflows
 
