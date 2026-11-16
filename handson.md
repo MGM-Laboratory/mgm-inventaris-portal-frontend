@@ -141,9 +141,9 @@ Peran: **Admin**. Buka **Label QR** di menu samping, atau pilih beberapa baris d
    email bagi non-Admin.
 3. Tekan **Cetak tiket** dan periksa pratinjau cetak.
 
-## 9. Tampilan seperti Snipe-IT
+## 9. Tata letak admin
 
-Tata letaknya mengikuti Snipe-IT (menu samping, dasbor angka, tabel data) dengan
+Tata letaknya terdiri dari menu samping, dasbor angka, dan tabel data, dengan
 warna dan font LabMGM.
 
 1. Sebagai **Admin**, buka **Dasbor**. Ada enam angka berwarna (perlu diputuskan,
@@ -158,8 +158,7 @@ warna dan font LabMGM.
 4. Buka **Permintaan**: tabel dengan tab status, pencarian, dan tombol
    **Putuskan** atau **Buka** di tiap baris.
 5. Sebagai **Guest** atau **Member**, menu samping hanya berisi Katalog,
-   Keranjang, dan Lacak tiket. Katalog berupa tabel seperti "Requestable Items"
-   di Snipe-IT.
+   Keranjang, dan Lacak tiket. Katalog berupa tabel.
 
 ## 10. Tampilan katalog
 
@@ -198,8 +197,7 @@ Peran: **Admin**. Buka **Aset** di menu samping.
    awal). Aksi diganti pesan bahwa unit sedang dipinjam atau dipesan, dengan
    tautan ke tiketnya.
 
-Hapus permanen dan impor CSV sengaja tidak ada di sini; itu tetap
-dikerjakan di Snipe-IT.
+Hapus permanen dan impor CSV belum ada di prototipe ini.
 
 ## 12. Terang, gelap, dan layar kecil
 
@@ -224,6 +222,6 @@ Hal yang sebaiknya Anda catat selama mencoba:
 
 ## Yang tidak bisa dicoba di prototipe
 
-Login Keycloak, email sungguhan, data Snipe-IT, dan keamanan sungguhan. Peran
+Login Keycloak, email sungguhan, backend sungguhan, dan keamanan sungguhan. Peran
 Admin bisa dipilih siapa saja lewat bar mode contoh, dan itu sengaja hanya untuk
 tahap ini.

@@ -73,9 +73,6 @@ export default function TambahAsetPage() {
                 );
               }}
             />
-            <p className="mt-5 text-[13px] text-ink-3">
-              Impor massal dari CSV dan hapus permanen dilakukan di Snipe-IT.
-            </p>
           </Box>
         )}
       </PageBody>

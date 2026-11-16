@@ -17,7 +17,7 @@ export function PageBody({
   );
 }
 
-/** Judul halaman dengan jejak, deskripsi, dan aksi, seperti halaman daftar Snipe-IT. */
+/** Judul halaman dengan jejak, deskripsi, dan aksi. */
 export function PageHeader({
   title,
   description,
@@ -63,7 +63,7 @@ export function PageHeader({
   );
 }
 
-/** Kotak berjudul, seperti "box" di Snipe-IT. `flush` menghapus padding isi untuk tabel. */
+/** Kotak berjudul. `flush` menghapus padding isi untuk tabel. */
 export function Box({
   title,
   actions,

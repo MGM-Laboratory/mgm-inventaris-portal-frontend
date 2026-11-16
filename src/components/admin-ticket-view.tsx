@@ -208,13 +208,13 @@ function AdminTicketViewInner({
         ? {
             to: "dipinjam" as const,
             label: "Catat serah terima",
-            help: "Peminjam sudah mengambil barang. Di sistem nyata ini memanggil check-out Snipe-IT.",
+            help: "Peminjam sudah mengambil barang.",
           }
         : ticket.status === "dipinjam"
           ? {
               to: "dikembalikan" as const,
               label: "Terima pengembalian",
-              help: "Barang sudah kembali. Di sistem nyata ini memanggil check-in Snipe-IT.",
+              help: "Barang sudah kembali.",
             }
           : null;
 
