@@ -39,7 +39,7 @@ The release pull request is opened by the App, so the owner can approve it, or m
 
 ## pre-commit.ci
 
-The pre-commit.ci GitHub app runs the hooks of `.pre-commit-config.yaml` on every pull request. They check for large files, case conflicts, broken JSON, TOML and YAML, merge conflict markers, symbolic links that do not resolve, private keys, a final newline, mixed line endings and trailing whitespace. The run is not a required check. `autofix_prs` is off, because the ruleset only accepts signed commits and the app would push an unsigned fix. A failing run needs a fix by hand. The app opens no update pull requests (`autoupdate_schedule: never`), because they would carry unsigned commits and fail the required checks `Conventional commits` and `PR format`. Renovate moves the hook revisions through its `pre-commit` manager, with the commit type `ci`.
+The pre-commit.ci GitHub app runs the hooks of `.pre-commit-config.yaml` on every pull request. They check for large files, case conflicts, broken JSON, TOML and YAML, merge conflict markers, symbolic links that do not resolve, private keys, a final newline, mixed line endings and trailing whitespace. The run is not a required check. `autofix_prs` is off, because the ruleset only accepts signed commits and the app would push an unsigned fix. A failing run needs a fix by hand. The app has no setting to turn its update pull requests off, so `autoupdate_schedule` is `quarterly`, the longest interval that it allows. Its update pull request carries unsigned commits and fails the required checks `Conventional commits` and `PR format`, so close it. Renovate moves the hook revisions through its `pre-commit` manager, with the commit type `ci`.
 
 ## Naming rules
 
