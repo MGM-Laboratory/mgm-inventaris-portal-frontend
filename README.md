@@ -1,4 +1,4 @@
-# Portal Inventaris LabMGM (prototipe frontend)
+# Portal Inventaris LabMGM, frontend
 
 Frontend portal peminjaman untuk sistem inventaris LabMGM, ditulis dari
 [PRD](https://claude.ai/artifact/FcySRnZfwzYLig23XKUVgc). Tahap ini hanya
@@ -9,6 +9,27 @@ Untuk mencoba semua alurnya langkah demi langkah, ikuti [handson.md](handson.md)
 Untuk yang akan memasang dan menyambungkannya, baca [HANDOVER.md](HANDOVER.md):
 daftar bagian yang masih palsu, keputusan yang sudah dibuat, dan yang masih
 menunggu jawaban.
+
+[![CI](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/ci.yaml/badge.svg)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/ci.yaml)
+[![Security](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/security.yaml/badge.svg)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/security.yaml)
+[![Config lint](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/config.yaml/badge.svg)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/actions/workflows/config.yaml)
+[![License](https://img.shields.io/github/license/MGM-Laboratory/mgm-inventaris-portal-frontend)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/blob/main/LICENSE)
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+
+[![Last commit](https://img.shields.io/github/last-commit/MGM-Laboratory/mgm-inventaris-portal-frontend)](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commits/main)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white)](https://www.conventionalcommits.org)
+
+## Stack
+
+- Next.js 16 (App Router, Cache Components), React 19, TypeScript 5 dan Tailwind CSS 4.
+- Data contoh di `localStorage`, semua akses lewat `src/lib/store.ts`.
+- npm dan Node 24 (`.nvmrc`). Next.js 16 membutuhkan Node 20.9 atau lebih baru.
+- CI di GitHub Actions, lihat [`docs/ci-cd.md`](docs/ci-cd.md).
 
 ## Menjalankan
 
@@ -73,7 +94,32 @@ Aturan yang masih sementara dan perlu diputuskan: batas lama pinjam (sekarang
 1 sampai 30 hari), batas 10 barang per permintaan (dari Pinjam yang lama), dan
 nomor tiket (`MGM-yymm-nnnn-XXXX`, dengan empat karakter acak di belakang).
 
-## Catatan teknis
+## Konfigurasi
 
-Next.js 16 dengan Cache Components aktif, React 19, Tailwind 4. Halaman dengan
-`params` memakai pembungkus `Suspense` (lihat `src/app/tiket/[nomor]/page.tsx`).
+Prototipe ini tidak membaca variabel lingkungan dan tidak punya berkas `.env`. Semua pengaturan ada di kode. Pengaturan seperti alamat backend ditambahkan saat backend tersambung.
+
+## Dokumentasi
+
+- [`HANDOVER.md`](HANDOVER.md) menjelaskan arsitektur sasaran, kontrak API usulan, sambungan ke Snipe-IT, pemasangan, dan pertanyaan yang masih terbuka.
+- [`handson.md`](handson.md) memandu mencoba semua alur langkah demi langkah.
+- [`docs/ci-cd.md`](docs/ci-cd.md) mendaftar workflow CI dan pemeriksaan yang diwajibkan.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md) dan [`ACCESSIBILITY.md`](ACCESSIBILITY.md) memuat aturan kontribusi, pelaporan keamanan, dan pernyataan aksesibilitas.
+
+## Struktur proyek
+
+```text
+src/app/          Halaman dan rute (App Router)
+src/components/   Kerangka aplikasi, tampilan, formulir, kode QR
+src/lib/          Data (store.ts, mock-data.ts), tipe, format, tiket PNG
+public/           Logo dan pola
+docs/             Dokumentasi CI/CD
+.github/          Workflow CI, templat isu dan pull request
+```
+
+## Berkontribusi dan keamanan
+
+Baca [`CONTRIBUTING.md`](CONTRIBUTING.md) sebelum membuka pull request. Laporkan celah keamanan secara pribadi sesuai [`SECURITY.md`](SECURITY.md) dan jangan membuka isu publik. Aturan perilaku ada di [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+
+## Lisensi
+
+[GNU General Public License v3.0](LICENSE).
