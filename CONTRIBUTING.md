@@ -26,7 +26,7 @@ There is no `dev` branch. Every change to `main` goes through a pull request.
 Every pull request runs the checks below. The ruleset of the repository requires them.
 
 - **Conventional commits** reads every commit message and the title of the pull request.
-- **PR format** reads the branch name, the label, the assignee and the body.
+- **PR format** reads the branch name, the label, the assignee and the body, and it counts the bullets against the commits.
 - **CI gate** runs lint and the production build.
 - **Config gate** runs actionlint, Zizmor, ShellCheck, ls-lint for file names and the Renovate validator.
 - **Security gate** summarizes CodeQL, dependency review, gitleaks and a Trivy filesystem scan. Gitleaks, dependency review and Trivy fail on a finding. Trivy fails on a CRITICAL or HIGH finding and also sends its findings to code scanning. CodeQL sends its findings to code scanning and fails only when the tool itself fails.
@@ -60,5 +60,5 @@ Use Conventional Commits (`type(scope): summary`) in English, with one of feat, 
 - Write the title as a Conventional Commit, for example `fix(tiket): reject a wrong email on lookup`.
 - The body is only the list of commits, one bullet for each commit.
 - Add one label, `bug` for a fix, `enhancement` for a feature and `documentation` for docs only, and assign the pull request to yourself. A contributor without write access cannot assign it, so ask a maintainer to do it and then rerun the failed check.
-- The check Conventional commits reads every commit message and the title. The check PR format reads the branch, the label, the assignee and the body. A bad commit message needs a rebase that rewords it and a force push to your own branch. For a missing label or assignee, add it and rerun the failed check.
+- The check Conventional commits reads every commit message and the title. The check PR format reads the branch, the label, the assignee and the body, and it counts the bullets against the commits. A merge commit is not counted as a commit. A bad commit message needs a rebase that rewords it and a force push to your own branch. For a missing label or assignee, add it and rerun the failed check, and for a body that does not match the commits, edit the body.
 - The maintainer merges with a merge commit, never a squash or a rebase.
