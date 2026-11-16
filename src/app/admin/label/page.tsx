@@ -52,7 +52,7 @@ function LabelCard({
       />
       <div style={{ marginLeft: "1mm", width: `${qr}mm`, height: `${qr}mm` }} className="shrink-0">
         <QrCode
-          value={`${origin}/aset/${unit.tag}`}
+          value={`${origin}/aset/${encodeURIComponent(unit.tag)}`}
           size="100%"
           label={`Kode QR untuk ${unit.tag}`}
         />

@@ -113,7 +113,7 @@ function Edit({ params }: { params: Promise<{ tag: string }> }) {
         crumbs={[
           { label: "Admin" },
           { label: "Aset", href: "/admin/aset" },
-          { label: unit.tag, href: `/aset/${unit.tag}` },
+          { label: unit.tag, href: `/aset/${encodeURIComponent(unit.tag)}` },
           { label: "Ubah" },
         ]}
       />
@@ -127,7 +127,7 @@ function Edit({ params }: { params: Promise<{ tag: string }> }) {
             submitLabel="Simpan perubahan"
             onSubmit={(v) => {
               updateUnit(unit.tag, { serial: v.serial, condition: v.condition, place: v.place });
-              router.push(`/aset/${unit.tag}`);
+              router.push(`/aset/${encodeURIComponent(unit.tag)}`);
             }}
           />
         </Box>
