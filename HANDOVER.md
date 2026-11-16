@@ -87,13 +87,17 @@ permintaan) hanya sementara.
 ## 3. Arsitektur sasaran dan pembagian tugas
 
 ```
-Peminjam (browser/ponsel) ──► Portal (Next.js, di Mac Mini)
-Admin (browser)           ──►   │  ├─ database PostgreSQL (tiket, guest, log)
-Member (nanti, Keycloak)  ──►   │  └─ token API Snipe-IT (hanya di server)
-                                ▼
-                         Snipe-IT (Docker, di Mac Mini)
-                           ├─ aplikasi + MariaDB/MySQL
-                           └─ aset, model, kategori, status, check-out/in
+Peminjam (browser/ponsel) ──┐
+Admin (browser)           ──┼──► Frontend portal (Next.js, repo ini)
+Member (nanti, Keycloak)  ──┘            │
+                                         ▼
+                              Backend portal (Go, repo terpisah)
+                                ├─ database PostgreSQL (tiket, guest, log)
+                                └─ token API Snipe-IT (hanya di server)
+                                         ▼
+                              Snipe-IT (Docker, di Mac Mini)
+                                ├─ aplikasi + MariaDB/MySQL
+                                └─ aset, model, kategori, status, check-out/in
 ```
 
 **Yang disimpan di Snipe-IT:** model, kategori, unit aset beserta kode dan
@@ -122,7 +126,7 @@ pilihan ini.
 
 | Pemilik | Tugas |
 | --- | --- |
-| **Pemegang proyek** | Cari pemegang akses admin Keycloak (`iam.labmgm.org`, realm `mgm`) dan minta satu klien OIDC; cek apakah NIM ada di akun MGM. Minta teman devops menyetujui tumpukan teknis. Jawab pertanyaan terbuka di bagian 21 yang menyangkut aturan lab. |
+| **Pemegang proyek** | Cari pemegang akses admin Keycloak (`iam.labmgm.org`, realm `mgm`) dan minta satu klien OIDC; cek apakah NIM ada di akun MGM. Pastikan teman devops tahu rencana backend Go dan PostgreSQL (bagian 3). Jawab pertanyaan terbuka di bagian 21 yang menyangkut aturan lab. |
 | **Devops** | Mac Mini (Docker, jaringan, nyala sendiri), subdomain dan DNS, HTTPS atau terowongan, Snipe-IT terpasang dan dikonfigurasi, backup dan uji pemulihan, email pengirim. |
 | **Backend** | Server portal: database, API di bagian 9, sambungan ke Snipe-IT, login Admin, batas percobaan, akhiran acak nomor tiket, anonimisasi data. |
 | **Seluruh divisi IT** | Pilot dua minggu, mengisi data aset asli, menjadi Admin dengan akun sendiri. |
@@ -132,7 +136,8 @@ pilihan ini.
 | Keputusan | Isi |
 | --- | --- |
 | Pemilik | Divisi IT LabMGM memiliki, memelihara, dan menyetujui peminjaman. |
-| Backend dan database | Backend Go di repo terpisah `MGM-Laboratory/mgm-inventaris-portal-backend`, dengan PostgreSQL. Diputuskan 16 November 2026, repo backend belum dibuat. Package manager frontend adalah npm. |
+| Backend dan database | Backend Go di repo terpisah `MGM-Laboratory/mgm-inventaris-portal-backend`, dengan PostgreSQL. Diputuskan 16 November 2026, repo backend belum dibuat. |
+| Package manager | npm untuk frontend (satu paket, tanpa workspace). Diputuskan 16 November 2026. |
 | Lisensi | GPL-3.0, sama dengan website utama. Diputuskan 16 November 2026. Snipe-IT tetap AGPL-3.0 dan tidak dimodifikasi. |
 | Backend lama | Portal dibuat dari awal. Backend Go lama (`mgm-hearth-backend`) tidak dipakai ulang; repo-nya juga tidak ada di GitHub publik. |
 | Snipe-IT | Tidak dimodifikasi (lisensi AGPL-3.0, diperiksa 10 November 2026). Fitur kustom hidup di portal. |
@@ -432,7 +437,7 @@ yang perlu dikonfirmasi backend.
 - Semua lewat HTTPS. Cookie sesi `HttpOnly`, `Secure`, `SameSite=Lax` atau lebih
   ketat. Perlindungan CSRF pada semua tulisan.
 - **Pengalihan ke halaman masuk di `app-shell.tsx` hanya di sisi klien.** Ulangi
-  di server (middleware atau pemeriksaan sesi di tiap route), karena siapa pun
+  di server (middleware atau pemeriksaan sesi di backend), karena siapa pun
   bisa memanggil API langsung.
 - Semua pemeriksaan hak (`canViewTicket`, hanya Admin boleh melihat serial) harus
   diulang di server. Browser tidak bisa dipercaya.
@@ -554,7 +559,9 @@ terbukti.
 | Komponen | Cara jalan | Catatan |
 | --- | --- | --- |
 | Snipe-IT | Docker (image `snipe/snipe-it`, tersedia untuk arm64; dicek di Docker Hub 10 November 2026) bersama MariaDB atau MySQL | Kunci versi image, jangan `latest` |
-| Portal | `npm run build && npm start` di bawah pengelola proses (misalnya launchd) | Berjalan sebagai pengguna biasa, bukan root |
+| Frontend portal | `npm run build && npm start` di bawah pengelola proses (misalnya launchd) | Berjalan sebagai pengguna biasa, bukan root. Ini repo ini saja |
+| Backend portal | Binary atau image Go dari repo backend (belum ada) | Kunci versi, jangan `latest`. Detailnya ditulis saat repo backend ada |
+| PostgreSQL | Docker atau pemasangan langsung (belum diputuskan) | Kunci versi image, volume data di luar kontainer, backup di bagian 17 |
 | Akses dari luar | Proksi balik atau terowongan gratis ke subdomain | Mac Mini di kampus biasanya tanpa alamat publik; pilih terowongan yang tidak membuka port masuk |
 | HTTPS | Dari proksi atau terowongan | Wajib |
 
@@ -577,7 +584,7 @@ didukung secara resmi. Docker adalah jalur yang direncanakan.
 ### Agar mesin tahan gangguan
 
 - [ ] Mac Mini diatur menyala sendiri setelah listrik padam, dan tidak tidur.
-- [ ] Docker dan portal hidup otomatis setelah mesin menyala tanpa orang login
+- [ ] Docker, frontend, backend dan PostgreSQL hidup otomatis setelah mesin menyala tanpa orang login
       (periksa caranya di macOS; sebagian Docker di macOS baru jalan setelah login).
 - [ ] Kontainer memakai kebijakan mulai ulang otomatis.
 - [ ] Ada pemantauan sederhana: pengecekan berkala bahwa portal dan Snipe-IT
@@ -590,8 +597,9 @@ didukung secara resmi. Docker adalah jalur yang direncanakan.
 
 - Snipe-IT diperbarui dengan mengganti versi image setelah membaca catatan rilisnya
   dan **setelah backup**. Uji di salinan lebih dulu bila perubahan besar.
-- Portal diperbarui dengan menarik kode dan membangun ulang; jalankan
-  `npm run lint`, `npx tsc --noEmit`, dan `npm run build` sebelumnya.
+- Frontend diperbarui dengan menarik kode dan membangun ulang; jalankan
+  `npm run lint`, `npx tsc --noEmit`, dan `npm run build` sebelumnya. Backend dan
+  PostgreSQL diperbarui setelah backup, caranya ditulis saat repo backend ada.
 - `npm audit --omit=dev` secara berkala.
 
 ## 17. Backup dan pemulihan
