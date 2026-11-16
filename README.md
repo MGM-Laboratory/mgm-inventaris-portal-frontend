@@ -2,7 +2,7 @@
 
 Frontend portal peminjaman untuk sistem inventaris LabMGM, ditulis dari
 [PRD](https://claude.ai/artifact/FcySRnZfwzYLig23XKUVgc). Tahap ini hanya
-tampilan dan alur, dengan data contoh di browser. Belum ada backend, Snipe-IT,
+tampilan dan alur, dengan data contoh di browser. Belum ada backend,
 Keycloak, atau pengiriman email.
 
 Untuk mencoba semua alurnya langkah demi langkah, ikuti [handson.md](handson.md).
@@ -68,7 +68,7 @@ mengembalikan data awal.
   tidak bisa diubah statusnya.
 - Lembar label QR untuk dicetak (`/admin/label`) dalam tiga ukuran. Isi kode
   QR sudah diuji terbaca dan mengarah ke `/aset/<kode>`.
-- Tampilan ala Snipe-IT dengan identitas LabMGM: menu samping, bilah atas
+- Tampilan dengan identitas LabMGM: menu samping, bilah atas
   (cari kode aset, lonceng permintaan, keranjang, tema, masuk), dasbor angka
   berwarna dengan aktivitas terbaru dan agenda, serta tabel data untuk katalog,
   permintaan, dan aset. Warna, font Hanken Grotesk dan Geist, logo, dan pola
@@ -76,7 +76,7 @@ mengembalikan data awal.
 
 ## Yang belum ada
 
-Impor CSV dan hapus permanen (tetap di Snipe-IT),
+Impor CSV, hapus permanen,
 barcode 1D di label, pengadaan, infrastruktur, dan
 permintaan lain (Rilis 2). Peminjaman ruangan tidak akan dibuat: MGM tidak
 menyediakannya.
@@ -84,7 +84,7 @@ menyediakannya.
 ## Menyambungkan ke sistem nyata
 
 Semua baca dan tulis data ada di `src/lib/store.ts`. Ganti isinya dengan
-panggilan ke layanan portal (tiket) dan REST API Snipe-IT (aset). Daftar barang
+panggilan ke backend portal (tiket dan aset). Daftar barang
 dan jumlahnya di `src/lib/mock-data.ts` adalah klaim lab, bukan hasil audit.
 
 Aturan yang masih sementara dan perlu diputuskan: batas lama pinjam (sekarang

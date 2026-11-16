@@ -197,7 +197,7 @@ function Edit({ params }: { params: Promise<{ tag: string }> }) {
 
           <p className="mt-5 text-[13px] text-ink-3">
             Untuk mengurangi stok, pakai Pensiunkan atau Tandai hilang agar riwayat peminjaman
-            tetap utuh. Hapus permanen hanya dilakukan di Snipe-IT.
+            tetap utuh.
           </p>
         </Box>
       </div>

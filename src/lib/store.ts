@@ -27,7 +27,7 @@ import type {
 
 /*
   Penyimpanan contoh di browser. Semua fungsi di sini nanti diganti panggilan
-  ke layanan portal; bentuk datanya sengaja mengikuti tiket di PRD.
+  ke backend portal; bentuk datanya sengaja mengikuti tiket di PRD.
 */
 
 type State = {
@@ -36,10 +36,9 @@ type State = {
   tickets: Ticket[];
   /** Nomor tiket yang dibuat di browser ini. */
   mine: string[];
-  /** Barang (model) dan kategori. Admin menambah sendiri; nanti dibaca dari Snipe-IT. */
+  /** Barang (model) dan kategori. Admin menambah sendiri. */
   models: AssetModel[];
   categories: Category[];
-  /** Unit aset. Di sistem nyata dibaca dari Snipe-IT. */
   units: AssetUnit[];
   log: AssetLog[];
   /** Tampilan katalog, seperti pilihan tampilan di pengelola berkas. */
@@ -196,8 +195,8 @@ export function availableQty(tickets: Ticket[], modelId: string) {
 
 /**
  * Status tiap unit, diturunkan dari tiket: unit berurutan menurut tag diberi
- * status dipinjam, lalu dipesan, sisanya tersedia. Di sistem nyata, Snipe-IT
- * mencatat unit mana yang dipinjam.
+ * status dipinjam, lalu dipesan, sisanya tersedia. Di sistem nyata, unit yang
+ * dipinjam dicatat saat serah terima.
  */
 export function unitStatuses(
   tickets: Ticket[],
@@ -545,7 +544,7 @@ export type NewModelInput = {
 
 /**
  * Membuat barang (model) baru, dan kategori barunya bila diisi. Mengembalikan
- * id barang. Di Snipe-IT ini berarti membuat model aset (dan kategori).
+ * id barang.
  */
 export function addModel(input: NewModelInput): string {
   let categories = state.categories;

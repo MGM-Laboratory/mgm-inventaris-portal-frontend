@@ -94,7 +94,7 @@ function NavGroup({
 }
 
 /**
- * Kerangka aplikasi ala Snipe-IT: bilah atas, menu samping, dan isi halaman.
+ * Kerangka aplikasi: bilah atas, menu samping, dan isi halaman.
  * Peminjam melihat menu pendek; Admin dan Maintainer menambah dasbor, permintaan,
  * aset, dan label.
  */

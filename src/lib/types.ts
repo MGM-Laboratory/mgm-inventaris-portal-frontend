@@ -13,11 +13,11 @@ export type AssetModel = {
   description: string;
   /** Awalan kode aset, misalnya "VRQ" untuk MGM-VRQ-001. Dipilih Admin saat barang dibuat. */
   prefix?: string;
-  /** Jumlah unit contoh di katalog. Nanti dibaca dari Snipe-IT. */
+  /** Jumlah unit contoh di katalog. */
   total: number;
 };
 
-/** Satu unit fisik yang punya label QR. Nanti dibaca dari Snipe-IT. */
+/** Satu unit fisik yang punya label QR. */
 export type AssetUnit = {
   tag: string;
   modelId: string;

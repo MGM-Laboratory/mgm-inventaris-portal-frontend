@@ -199,7 +199,7 @@ function AssetViewInner({ params }: { params: Promise<{ tag: string }> }) {
               )}
               <p className="mt-3 text-[13px] text-ink-3">
                 Mode contoh: unit yang dipinjam diturunkan dari jumlah di tiket.
-                Di sistem nyata, Snipe-IT mencatat unit mana yang diserahkan.
+                Di sistem nyata, unit dipilih saat serah terima.
               </p>
             </Box>
           ) : null}
