@@ -30,6 +30,7 @@ Every pull request runs the checks below. The ruleset of the repository requires
 - **CI gate** runs lint and the production build.
 - **Config gate** runs actionlint, Zizmor, ShellCheck, ls-lint for file names and the Renovate validator.
 - **Security gate** summarizes CodeQL, dependency review, gitleaks and a Trivy filesystem scan. Gitleaks, dependency review and Trivy fail on a finding. Trivy fails on a CRITICAL or HIGH finding and also sends its findings to code scanning. CodeQL sends its findings to code scanning and fails only when the tool itself fails.
+- **pre-commit.ci** is not required by the ruleset, but its report should be clean. It runs repository hygiene checks on every pull request and does not push a fix.
 
 A lint warning or a deprecation notice in the output of a check is still something to fix before the pull request is done, even when it does not turn the check red.
 
