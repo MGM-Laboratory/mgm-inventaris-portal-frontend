@@ -27,7 +27,7 @@ import type {
 
 /*
   Penyimpanan contoh di browser. Semua fungsi di sini nanti diganti panggilan
-  ke layanan portal; bentuk datanya sengaja mengikuti tiket di PRD.
+  ke backend portal; bentuk datanya sengaja mengikuti tiket di PRD.
 */
 
 type State = {
@@ -39,7 +39,6 @@ type State = {
   /** Barang (model) dan kategori. Admin menambah sendiri. */
   models: AssetModel[];
   categories: Category[];
-  /** Unit aset. */
   units: AssetUnit[];
   log: AssetLog[];
   /** Tampilan katalog, seperti pilihan tampilan di pengelola berkas. */
