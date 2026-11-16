@@ -26,7 +26,7 @@ The ruleset `main` on the default branch requires a pull request with a merge co
 - Config gate
 - Security gate
 
-The ruleset needs no approving review and does not require code owner review.
+A second ruleset, `main-merge-and-approval`, requires one approving review and the approval of a code owner, and it allows only merge commits. It also has the rule `update`, so only the bypass team can merge into `main`. `.github/CODEOWNERS` names the owner. The team `mgm-inventaris-portal-maintainer` can bypass this second ruleset through a pull request, and it cannot bypass the first one. The bypass covers only the approval, the code owner review and the `update` rule. Signed commits, resolved threads, up to date branches and the five checks still apply to the team. A pull request from anyone else needs the approval of the owner. A Renovate pull request that changes `package.json` needs the owner as well, and a pull request that changes only `package-lock.json` needs any one approval.
 
 ## Naming rules
 
