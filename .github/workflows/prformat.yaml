@@ -3,11 +3,11 @@ name: Pull request format
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled, assigned, unassigned]
 
 # Like commits.yaml, a run is never cancelled and every run has a group of its own, because GitHub keeps a cancelled run of a required
 # check as unmet. The pull request is read when the run starts and not from the event, so a rerun checks what the pull request looks
-# like now. A label or an assignee that was added after the last run is picked up by a rerun of the failed run.
+# like now. A change of a label or an assignee starts a new run, so a removal fails the check and an addition fixes it.
 concurrency:
   group: prformat-${{ github.run_id }}
   cancel-in-progress: false
@@ -91,6 +91,14 @@ jobs:
 
           if [ "$bullets" -eq 0 ]; then
             fail "The body has no bullet, list one bullet for each commit of the pull request."
+          fi
+
+          # A merge commit of the base branch, such as the one of update-branch, has two parents and is not counted
+          # The answer is read into a variable first, so that a failed call stops the step with its own error and never counts as 0 commits
+          shas="$(gh api "repos/$GH_REPO/pulls/$PULL_REQUEST/commits" --paginate --jq '.[] | select((.parents | length) == 1) | .sha')"
+          commits="$(printf '%s\n' "$shas" | sed '/^$/d' | wc -l | tr -d '[:space:]')"
+          if [ "$bullets" -ne "$commits" ] && [ "$bullets" -ne 0 ]; then
+            fail "The body has $bullets bullets and the pull request has $commits commits, list one bullet for each commit."
           fi
 
           if [ "$failed" -ne 0 ]; then
