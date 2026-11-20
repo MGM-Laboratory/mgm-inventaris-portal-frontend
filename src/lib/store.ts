@@ -158,15 +158,13 @@ const RESERVING: TicketStatus[] = [
 
 /** Tanggal hari ini di Asia/Jakarta, karena aturan tanggal ambil memakai zona itu. */
 export function todayIso() {
-  const part = (type: string) =>
-    new Intl.DateTimeFormat("en-US", {
-      timeZone: "Asia/Jakarta",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-      .formatToParts(new Date())
-      .find((p) => p.type === type)?.value;
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const part = (type: string) => parts.find((p) => p.type === type)?.value;
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
