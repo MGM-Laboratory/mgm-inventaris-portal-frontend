@@ -72,12 +72,11 @@ jobs:
         run: |
           mkdir -p "$OUT"
           i=0
-          for f in "$ROOTFS"/app/.next/server/app/*/*/*.segments/_full.segment.rsc "$ROOTFS"/app/.next/server/app/*/*.segments/_full.segment.rsc; do
-            [ -f "$f" ] || continue
+          while IFS= read -r -d '' f; do
             i=$((i + 1))
             cp "$f" "$OUT/$(printf '%02d' "$i").rsc"
             echo "$i ${f#"$ROOTFS"/}" >> "$OUT/index.txt"
-          done
+          done < <(find "$ROOTFS/app/.next/server/app" -name _full.segment.rsc -print0 | sort -z)
 
       - name: Upload the segment files (temporary)
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
