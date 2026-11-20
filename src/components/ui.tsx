@@ -76,6 +76,31 @@ export function LinkButton({
   );
 }
 
+/** Kolom jebakan untuk bot. Orang tidak melihatnya dan tidak bisa mengisinya, jadi isinya harus tetap kosong. */
+export function Honeypot() {
+  return (
+    <div inert className="pointer-events-none absolute -left-[9999px] size-px overflow-hidden">
+      <label>
+        Website
+        <input
+          type="text"
+          name="website"
+          defaultValue=""
+          tabIndex={-1}
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+        />
+      </label>
+    </div>
+  );
+}
+
+/** True bila kolom jebakan terisi, yaitu pengirimnya hampir pasti bot. */
+export function honeypotFilled(form: HTMLFormElement) {
+  return String(new FormData(form).get("website") ?? "").trim() !== "";
+}
+
 export function Field({
   label,
   hint,

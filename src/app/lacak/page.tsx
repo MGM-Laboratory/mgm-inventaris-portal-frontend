@@ -53,7 +53,7 @@ function Form() {
           onChange={(e) => setNomor(e.target.value)}
           placeholder="MGM-2611-0001-K7QX"
           autoComplete="off"
-          className={`${inputClass} tnum font-mono`}
+          className={`${inputClass} tnum font-mono uppercase`}
         />
       </Field>
       <Field label="Email UB yang dipakai saat mengajukan" htmlFor="email">
