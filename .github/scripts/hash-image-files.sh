@@ -12,7 +12,12 @@ fi
 cd "$1"
 export LC_ALL=C
 
-find . -type f -print0 | sort -z | xargs -0 -r sha256sum
+find . -type f ! -name '_full.segment.rsc' -print0 | sort -z | xargs -0 -r sha256sum
+# Next.js puts a random placeholder %%drp:name:hex%% in the payload of a dynamic route, so the value is replaced before hashing
+find . -type f -name '_full.segment.rsc' -print0 | sort -z | while IFS= read -r -d '' file; do
+  hash="$(sed -E 's/%%drp:([A-Za-z0-9_]+):[0-9a-f]+%%/%%drp:\1:RANDOM%%/g' "$file" | sha256sum | cut -d ' ' -f 1)"
+  printf '%s  %s\n' "$hash" "$file"
+done
 find . -type l -print0 | sort -z | while IFS= read -r -d '' link; do
   printf 'link  %s -> %s\n' "$link" "$(readlink "$link")"
 done
