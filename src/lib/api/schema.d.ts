@@ -1023,12 +1023,12 @@ export interface components {
              * @description The identifier of an existing category.
              */
             categoryId: string;
-            newCategory?: unknown;
+            newCategory?: never;
         };
         /** @description A new model with a new category. The body must not hold `categoryId`. */
         ModelInputNewCategory: components["schemas"]["ModelInputBase"] & {
             newCategory: components["schemas"]["NewCategory"];
-            categoryId?: unknown;
+            categoryId?: never;
         };
         /** @description A new model. The body has exactly one of `categoryId` and `newCategory`. A body with both or with neither fails the rule. */
         ModelInput: components["schemas"]["ModelInputInCategory"] | components["schemas"]["ModelInputNewCategory"];
