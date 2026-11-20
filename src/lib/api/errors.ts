@@ -36,7 +36,7 @@ export class ApiError extends Error {
     return new ApiError({
       status: response.status,
       code: error?.code ?? "unknown",
-      message: error?.message ?? response.statusText,
+      message: error?.message || response.statusText || `HTTP ${response.status}`,
       details: error?.details,
       requestId: error?.requestId ?? response.headers.get("X-Request-Id") ?? undefined,
       retryAfter: Number.isFinite(retry) && retry > 0 ? retry : undefined,

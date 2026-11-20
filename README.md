@@ -92,7 +92,7 @@ nomor tiket (`MGM-yymm-nnnn-XXXX`, dengan empat karakter acak di belakang).
 
 ## Konfigurasi
 
-Aplikasi ini hanya membaca satu variabel lingkungan, `DEV_API_URL`, dan hanya saat `npm run dev`. Nilainya alamat backend untuk proksi `/api/*` dan bawaannya `http://localhost:8080`. Di produksi, nginx yang memberi halaman dan API satu asal, jadi tidak ada pengaturan alamat. Untuk mencoba tanpa HTTPS, jalankan backend dengan `SECURE_COOKIE=false`.
+Aplikasi ini hanya membaca satu variabel lingkungan, `DEV_API_URL`, dan hanya saat `npm run dev`. Nilainya alamat backend untuk proksi `/api/*` dan bawaannya `http://localhost:8080`. Di produksi, nginx yang memberi halaman dan API satu asal, jadi tidak ada pengaturan alamat. Untuk mencoba tanpa HTTPS, jalankan backend dengan `ENVIRONMENT=development`, `SECURE_COOKIE=false` dan `PUBLIC_BASE_URL=http://localhost:3004`.
 
 ## Dokumentasi
 

@@ -11,6 +11,9 @@ export function setCsrfToken(token: string | null) {
 
 const readOnly = new Set(["GET", "HEAD", "OPTIONS"]);
 
+// The only routes whose answer holds a csrfToken, so no other answer is cloned and parsed
+const tokenPaths = new Set(["/api/session", "/api/session/guest", "/api/admin/session", "/api/tickets/lookup"]);
+
 async function refreshCsrfToken() {
   const response = await fetch("/api/session", { credentials: "same-origin" });
   if (response.ok) {
@@ -24,9 +27,9 @@ const middleware: Middleware = {
     if (csrfToken && !readOnly.has(request.method)) request.headers.set("X-CSRF-Token", csrfToken);
     return request;
   },
-  async onResponse({ response }) {
+  async onResponse({ response, schemaPath }) {
     const type = response.headers.get("Content-Type") ?? "";
-    if (response.ok && type.includes("application/json")) {
+    if (response.ok && tokenPaths.has(schemaPath) && type.includes("application/json")) {
       const body = (await response.clone().json().catch(() => null)) as { csrfToken?: unknown } | null;
       if (typeof body?.csrfToken === "string") csrfToken = body.csrfToken;
     } else if (response.status === 403 && type.includes("application/json")) {
@@ -38,7 +41,7 @@ const middleware: Middleware = {
   },
 };
 
-/** The typed client of the contract. Every path starts with /api on the host of the page, so there is no base URL. */
+/** The typed client of the contract, for the browser only. Every path starts with /api on the host of the page. */
 export const api = createClient<paths>({ baseUrl: "", credentials: "same-origin" });
 api.use(middleware);
 

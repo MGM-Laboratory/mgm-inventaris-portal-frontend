@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   // In development this proxy gives the page and the API one origin, as nginx does in production. DEV_API_URL defaults to port 8080.
   async rewrites() {
     if (process.env.NODE_ENV === "production") return [];
-    return [{ source: "/api/:path*", destination: `${process.env.DEV_API_URL ?? "http://localhost:8080"}/api/:path*` }];
+    return [{ source: "/api/:path*", destination: `${process.env.DEV_API_URL?.replace(/\/$/, "") || "http://localhost:8080"}/api/:path*` }];
   },
   async headers() {
     // Only the production build sends them. The dev server runs over plain HTTP, where HSTS does nothing.
