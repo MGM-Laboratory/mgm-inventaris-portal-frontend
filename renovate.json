@@ -41,6 +41,14 @@
       "matchUpdateTypes": ["minor", "patch", "digest", "pin"]
     },
     {
+      "description": "the base images of the app Dockerfile are part of the app image, so they take the commit type of the packages",
+      "matchManagers": ["dockerfile"],
+      "matchFileNames": ["Dockerfile"],
+      "semanticCommitType": "build",
+      "groupName": "Dockerfile base images",
+      "matchUpdateTypes": ["minor", "patch", "digest", "pin"]
+    },
+    {
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "GitHub Actions"
