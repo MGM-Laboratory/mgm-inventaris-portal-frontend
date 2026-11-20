@@ -22,11 +22,10 @@ FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
-
 # The runtime needs only the node binary. npm, corepack and yarn carry their own bundled packages, which scanners report, and
 # nothing at run time calls them.
-RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+RUN addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
     /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
     /usr/local/bin/yarn /usr/local/bin/yarnpkg /opt/yarn-*
 
