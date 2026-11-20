@@ -2,7 +2,7 @@
 
 Every pull request and every merge to `main` of `github.com/MGM-Laboratory/mgm-inventaris-portal-frontend` runs the workflows below. `main` is protected. Every change goes through a branch, a pull request and the required checks, and it is merged with a merge commit, never squash or rebase.
 
-The portal is not deployed from this repository yet. The `Dockerfile` builds the production image of the frontend, and the image build, scan and signing workflows are not added yet. A prototype demo runs on a separate Vercel project, which this repository does not configure.
+The portal is not deployed from this repository yet. The `Dockerfile` builds the production image of the frontend, and the workflow `Docker` builds, scans and signs it. A prototype demo runs on a separate Vercel project, which this repository does not configure.
 
 ## GitHub Actions workflows
 
@@ -11,6 +11,7 @@ The portal is not deployed from this repository yet. The `Dockerfile` builds the
 | CI             | Pull request, push to `main`, manual                  | Installs with `npm ci`, runs ESLint and the production build. The build also type checks. The job `CI gate` summarizes the run. |
 | Config lint    | Pull request, push to `main`, manual                  | Actionlint, Zizmor, ShellCheck, Hadolint for the Dockerfile, ls-lint for file names and the Renovate validator. The job `Config gate` summarizes the run.                |
 | Security       | Pull request, push to `main`, Mondays 03:00 UTC, manual | CodeQL, dependency review (pull requests only), gitleaks and a Trivy filesystem scan. Gitleaks, dependency review and Trivy fail on a finding. Trivy fails on a CRITICAL or HIGH finding and also sends its findings to code scanning. CodeQL sends its findings to code scanning and fails only when the tool itself fails. OSSF Scorecard runs on the schedule and by hand. The job `Security gate` summarizes the run. |
+| Docker | Pull request, push to `main`, tags `v*.*.*`, manual | Builds the image of the `Dockerfile` for amd64 and arm64 (amd64 only on a pull request), pushes it to GitHub Container Registry by digest, joins the platforms under the tags, scans it with Trivy, attaches a CycloneDX SBOM attestation and signs it with cosign (keyless, classic `.sig` format). A pull request from a fork or from Dependabot only builds. |
 | Commit messages | Pull request                                         | Runs commitlint on every commit and checks that the title follows Conventional Commits. The job is named `Conventional commits`. |
 | Release Please | Push to `main`, manual | Opens and updates the release pull request, and creates the tag `vX.Y.Z` and the GitHub release when that pull request is merged. The job `Release PR and tag` builds a token from the release GitHub App `syafa-bot`. |
 | Pull request format | Pull request | Checks the branch name, the label, the assignee, that the body holds only bullets and that the bullets match the commits, not counting merge commits. The job is named `PR format`. |
@@ -43,7 +44,7 @@ The pre-commit.ci GitHub app runs the hooks of `.pre-commit-config.yaml` on ever
 
 ## Docker image
 
-The `Dockerfile` has a build stage and a runtime stage on `node:24-alpine`, pinned by digest. The build runs `npm ci` and `npm run build`, and `next.config.ts` sets `output: "standalone"`, so the runtime stage copies only the standalone server, the static files and `public`. The runtime image has no npm, runs as the user `nextjs` and listens on port 3000. The route `/healthz` answers `{"status":"ok"}` and makes no call to the API, and the `HEALTHCHECK` reads it. The build downloads the fonts of `next/font/google`, so it needs outbound HTTPS. The build argument `BUILD_ID` is the commit, so two builds of one commit write the same build id. The production build sends the headers `X-Content-Type-Options`, `Strict-Transport-Security` (one year, no subdomains), `X-Frame-Options` and `Referrer-Policy`. Hadolint checks the `Dockerfile` in the job `Hadolint`, with the settings in `.hadolint.yml`.
+The `Dockerfile` has a build stage and a runtime stage on `node:24-alpine`, pinned by digest. The build runs `npm ci` and `npm run build`, and `next.config.ts` sets `output: "standalone"`, so the runtime stage copies only the standalone server, the static files and `public`. The runtime image has no npm, runs as the user `nextjs` and listens on port 3000. The route `/healthz` answers `{"status":"ok"}` and makes no call to the API, and the `HEALTHCHECK` reads it. The build downloads the fonts of `next/font/google`, so it needs outbound HTTPS. The build argument `BUILD_ID` is the commit, so two builds of one commit write the same build id. The production build sends the headers `X-Content-Type-Options`, `Strict-Transport-Security` (one year, no subdomains), `X-Frame-Options` and `Referrer-Policy`. Hadolint checks the `Dockerfile` in the job `Hadolint`, with the settings in `.hadolint.yml`. The image is `ghcr.io/mgm-laboratory/mgm-inventaris-portal-frontend`, with the tags `latest` and `sha-<short sha>` from `main`, `pr-<number>` from a pull request and the version tags from a release. The Docker workflow never gets `workflow_call`, because a signature made through a caller would carry another identity. Trivy findings of the image go to code scanning and do not fail the run. The package of a new image starts private on GitHub, and the owner makes it public in the package settings.
 
 ## Naming rules
 
@@ -56,5 +57,5 @@ Renovate opens the pull requests through the Mend Renovate GitHub app, which an 
 ## Not set up yet
 
 - Tests with coverage and Codecov. The repository has no test files yet.
-- The image build, scan and signing workflows for the `Dockerfile`.
+- The mirror of the image to Docker Hub, the re-sign workflow and the repeatable build check.
 - Prose linting, Lighthouse and browser tests.

@@ -1,0 +1,315 @@
+name: Docker
+
+# Never add workflow_call here. A workflow that calls this one would get signatures with the identity of this file on main, and the
+# Docker Hub mirror and the checks in the docs accept that identity.
+#
+# The image is ghcr.io/mgm-laboratory/mgm-inventaris-portal-frontend. It goes to GitHub Container Registry and is signed there.
+# A separate workflow copies it to Docker Hub.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: docker-${{ github.workflow }}-${{ github.ref }}
+  # A run that has started is never cancelled unless it builds a pull request. Cancelling a run on main or a tag after the push
+  # has moved the tags but before the image is scanned and signed would leave an unsigned image under them. A run that is still
+  # waiting is replaced by a newer one, which is fine because only the newest commit on main matters for latest. The group
+  # is the ref, so two runs for main never overlap and never move latest at the same time. The run for a release tag is in a
+  # group of its own and can overlap a run for main, which is harmless because it only adds the version tags.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions: {}
+
+jobs:
+  # Each platform is built on a runner of its own architecture, and one job after them joins the platform images into one image
+  # and scans, attests and signs it. The arm64 build used to run under emulation on an amd64 runner, where a Next.js build took
+  # more than the two hours that the job was allowed. A pull request builds amd64 only.
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(github.event_name == 'pull_request' && '{"include":[{"arch":"amd64","platform":"linux/amd64","runner":"ubuntu-latest"}]}' || '{"include":[{"arch":"amd64","platform":"linux/amd64","runner":"ubuntu-latest"},{"arch":"arm64","platform":"linux/arm64","runner":"ubuntu-24.04-arm"}]}') }}
+    env:
+      # Dependabot and fork runs get no write access or secrets, so they only build. A manual run only publishes from main,
+      # because the signature check accepts no other branch
+      PUSH: ${{ github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Compute image names
+        run: echo "GHCR_IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      # Only the labels of the image are used here, and they are the same ones that the publish job would make, because they name the
+      # version and the commit. The tags are made by the publish job.
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        env:
+          DOCKER_METADATA_PR_HEAD_SHA: "true"
+        with:
+          images: ${{ env.GHCR_IMAGE }}
+          flavor: latest=false
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=sha,prefix=sha-,format=short,enable=${{ github.ref_type != 'tag' }}
+            type=ref,event=pr,prefix=pr-
+            type=semver,pattern={{version}}
+
+      - name: Login to GitHub Container Registry
+        if: env.PUSH == 'true'
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # The platform image is pushed by its digest and gets no tag. The next job joins the digests of the platforms under the tags.
+      - name: Build and push the platform image
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        env:
+          # the build record is one more artifact for every run and nothing reads it
+          DOCKER_BUILD_RECORD_UPLOAD: "false"
+        with:
+          context: .
+          file: Dockerfile
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: BUILD_ID=${{ github.sha }}
+          outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ env.PUSH == 'true' }}
+          cache-from: type=gha,scope=frontend-${{ matrix.arch }}
+          # Only main writes the cache. A pull request and a tag read the cache of main and write none, because a cache that a
+          # pull request or a tag wrote can only be read by that same ref. Mode min keeps only the layers of the final image,
+          # which keeps the cache of the repository under the limit of 10 GB.
+          cache-to: ${{ github.ref == 'refs/heads/main' && format('type=gha,mode=min,scope=frontend-{0}', matrix.arch) || '' }}
+
+      - name: Keep the digest of the platform image
+        if: env.PUSH == 'true'
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p "${RUNNER_TEMP}/digests"
+          touch "${RUNNER_TEMP}/digests/${DIGEST#sha256:}"
+
+      - name: Upload the digest of the platform image
+        if: env.PUSH == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: digests-${{ matrix.arch }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  image:
+    name: Publish image
+    needs: build
+    # The condition is the PUSH expression of the build job. The two have to stay the same, and every step below may rely on it.
+    if: ${{ github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      security-events: write
+    env:
+      PUSH: "true"
+      # Only main and the release tags get the arm64 image, a pull request builds amd64 only
+      ARM64: ${{ github.event_name != 'pull_request' }}
+      # This job never logs in to Docker Hub, because a pull request can change it. The docker-hub-mirror workflow copies the image
+      # there from main, and these two are only used to name the image in its attestation
+      HUB: ${{ vars.DOCKERHUB_USERNAME != '' }}
+      HUB_IMAGE: ${{ vars.DOCKERHUB_USERNAME || 'local' }}/mgm-inventaris-portal-frontend
+    steps:
+      - name: Compute image names
+        run: echo "GHCR_IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - name: Download the digests of the platform images
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: digests-*
+          path: ${{ runner.temp }}/digests
+          merge-multiple: true
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        env:
+          # A pull request build runs on a merge commit that GitHub makes, so without this the sha tag names that commit and
+          # not the commit of the branch. The Docker Hub mirror finds the image by the commit of the branch.
+          DOCKER_METADATA_PR_HEAD_SHA: "true"
+        with:
+          images: ${{ env.GHCR_IMAGE }}
+          # A release makes two runs for the same commit, one for main and one for the tag. Both would move latest and the
+          # sha tag, and the run that finishes last wins, so only main publishes them and a tag run only adds its version tags.
+          # The default flavor adds latest to every semver tag by itself, so it is turned off and the raw tag below decides.
+          flavor: latest=false
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=sha,prefix=sha-,format=short,enable=${{ github.ref_type != 'tag' }}
+            type=ref,event=pr,prefix=pr-
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            # a major version of 0 means that the API can still change, so no floating tag points at it
+            type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # One image under every tag, made of the platform images. The files in the folder are named by the digests.
+      - name: Join the platform images under the tags
+        id: index
+        working-directory: ${{ runner.temp }}/digests
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          args=()
+          while IFS= read -r tag; do
+            if [ -n "$tag" ]; then args+=(-t "$tag"); fi
+          done <<< "$TAGS"
+          [ "${#args[@]}" -gt 0 ] || { echo "No tag was made" >&2; exit 1; }
+          sources=()
+          for file in *; do
+            [[ "$file" =~ ^[0-9a-f]{64}$ ]] || { echo "Unexpected file $file in the digests" >&2; exit 1; }
+            sources+=("${GHCR_IMAGE}@sha256:${file}")
+          done
+          docker buildx imagetools create "${args[@]}" "${sources[@]}"
+          first="$(head -n 1 <<< "$TAGS")"
+          digest="$(docker buildx imagetools inspect "$first" --format '{{.Manifest.Digest}}')"
+          [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo "The digest of $first is not valid, got $digest" >&2; exit 1; }
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+
+      # The build digest is the one of the index of all platforms. Each platform has an image of its own with its own
+      # digest, and scanning that digest is the only way to be sure which of them Trivy looked at
+      - name: Find the image of each platform
+        id: platforms
+        if: env.PUSH == 'true'
+        env:
+          INDEX: ${{ env.GHCR_IMAGE }}@${{ steps.index.outputs.digest }}
+        run: |
+          manifest="$(docker buildx imagetools inspect "$INDEX" --raw)"
+          archs="amd64"
+          if [ "$ARM64" = "true" ]; then archs="amd64 arm64"; fi
+          for arch in $archs; do
+            digest="$(jq -r --arg arch "$arch" '.manifests[] | select(.platform.os == "linux" and .platform.architecture == $arch) | .digest' <<< "$manifest")"
+            test -n "$digest"
+            echo "$arch $digest"
+            echo "$arch=$digest" >> "$GITHUB_OUTPUT"
+          done
+
+      - name: Trivy image scan (amd64)
+        if: env.PUSH == 'true'
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: ${{ env.GHCR_IMAGE }}@${{ steps.platforms.outputs.amd64 }}
+          format: sarif
+          output: trivy-image-amd64.sarif
+          severity: CRITICAL,HIGH
+          limit-severities-for-sarif: true
+
+      - name: Upload Trivy results to code scanning (amd64)
+        if: ${{ env.PUSH == 'true' && always() }}
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          sarif_file: trivy-image-amd64.sarif
+          category: trivy-image-amd64
+
+      - name: Trivy image scan (arm64)
+        if: env.PUSH == 'true' && env.ARM64 == 'true'
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: ${{ env.GHCR_IMAGE }}@${{ steps.platforms.outputs.arm64 }}
+          format: sarif
+          output: trivy-image-arm64.sarif
+          severity: CRITICAL,HIGH
+          limit-severities-for-sarif: true
+
+      - name: Upload Trivy results to code scanning (arm64)
+        if: ${{ env.PUSH == 'true' && env.ARM64 == 'true' && always() }}
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          sarif_file: trivy-image-arm64.sarif
+          category: trivy-image-arm64
+
+      - name: Generate SBOM
+        if: env.PUSH == 'true'
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          image: ${{ env.GHCR_IMAGE }}@${{ steps.index.outputs.digest }}
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+          upload-artifact: true
+          upload-artifact-retention: 14
+          upload-release-assets: false
+
+      - name: Attest SBOM for GitHub Container Registry
+        if: env.PUSH == 'true'
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4.1.0
+        with:
+          subject-name: ${{ env.GHCR_IMAGE }}
+          subject-digest: ${{ steps.index.outputs.digest }}
+          sbom-path: sbom.cdx.json
+
+      - name: Attest SBOM for Docker Hub
+        if: env.PUSH == 'true' && env.HUB == 'true'
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4.1.0
+        with:
+          subject-name: docker.io/${{ env.HUB_IMAGE }}
+          subject-digest: ${{ steps.index.outputs.digest }}
+          sbom-path: sbom.cdx.json
+
+      - name: Install cosign
+        if: env.PUSH == 'true'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      # The default bundle format of cosign 3 is stored as an OCI referrer, and GitHub Container Registry lists it under the wrong type, so a plain cosign verify finds nothing
+      # The classic format is a .sig tag that every registry and every cosign version can read
+      - name: Sign image (keyless)
+        if: env.PUSH == 'true'
+        env:
+          DIGEST: ${{ steps.index.outputs.digest }}
+        run: |
+          cosign sign --yes --use-signing-config=false --new-bundle-format=false "${GHCR_IMAGE}@${DIGEST}"
+
+      # A signing step that did nothing useful would pass unnoticed, so check every signature against the identity of this workflow
+      - name: Verify the signature
+        if: env.PUSH == 'true'
+        env:
+          DIGEST: ${{ steps.index.outputs.digest }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          identity="^https://github\.com/${REPOSITORY}/\.github/workflows/docker\.yaml@refs/(heads/main|tags/v.+|pull/[0-9]+/merge)$"
+          verify() {
+            cosign verify \
+              --new-bundle-format=false \
+              --certificate-identity-regexp "$identity" \
+              --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+              "$1@${DIGEST}" > /dev/null
+          }
+          verify "$GHCR_IMAGE"
