@@ -15,10 +15,14 @@ const readOnly = new Set(["GET", "HEAD", "OPTIONS"]);
 const tokenPaths = new Set(["/api/session", "/api/session/guest", "/api/admin/session", "/api/tickets/lookup"]);
 
 async function refreshCsrfToken() {
-  const response = await fetch("/api/session", { credentials: "same-origin" });
-  if (response.ok) {
-    const body = (await response.json().catch(() => null)) as { csrfToken?: string } | null;
-    if (typeof body?.csrfToken === "string") csrfToken = body.csrfToken;
+  try {
+    const response = await fetch("/api/session", { credentials: "same-origin" });
+    if (response.ok) {
+      const body = (await response.json().catch(() => null)) as { csrfToken?: string } | null;
+      if (typeof body?.csrfToken === "string") csrfToken = body.csrfToken;
+    }
+  } catch {
+    // Best effort, so the caller still gets the original 403
   }
 }
 
@@ -42,7 +46,12 @@ const middleware: Middleware = {
 };
 
 /** The typed client of the contract, for the browser only. Every path starts with /api on the host of the page. */
-export const api = createClient<paths>({ baseUrl: "", credentials: "same-origin" });
+// The contract sends a list as one comma separated value (status=a,b) and openapi-fetch repeats the key unless told otherwise
+export const api = createClient<paths>({
+  baseUrl: "",
+  credentials: "same-origin",
+  querySerializer: { array: { style: "form", explode: false } },
+});
 api.use(middleware);
 
 type Result<T> = { data?: T; error?: unknown; response: Response };

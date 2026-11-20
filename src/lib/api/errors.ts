@@ -4,6 +4,11 @@ export type ApiErrorBody = components["schemas"]["ErrorBody"];
 export type ApiErrorCode = components["schemas"]["ErrorCode"];
 export type ApiErrorDetail = components["schemas"]["ErrorDetail"];
 
+function validDetails(value: unknown): ApiErrorDetail[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.filter((d): d is ApiErrorDetail => typeof d?.field === "string" && typeof d?.code === "string");
+}
+
 /** An error answer of the API. A screen branches on `code` and never on `message`. */
 export class ApiError extends Error {
   readonly status: number;
@@ -37,7 +42,7 @@ export class ApiError extends Error {
       status: response.status,
       code: error?.code ?? "unknown",
       message: error?.message || response.statusText || `HTTP ${response.status}`,
-      details: error?.details,
+      details: validDetails(error?.details),
       requestId: error?.requestId ?? response.headers.get("X-Request-Id") ?? undefined,
       retryAfter: Number.isFinite(retry) && retry > 0 ? retry : undefined,
     });
