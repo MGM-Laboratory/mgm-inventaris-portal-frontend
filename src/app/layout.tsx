@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Hanken_Grotesk } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { AppShell } from "@/components/app-shell";
 import { DemoBar } from "@/components/demo-bar";
+import { QueryProvider } from "@/lib/api/query-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,10 +41,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col bg-page text-ink">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Suspense fallback={null}>
-            <AppShell>{children}</AppShell>
-          </Suspense>
-          <DemoBar />
+          <QueryProvider>
+            <Suspense fallback={null}>
+              <AppShell>{children}</AppShell>
+            </Suspense>
+            <DemoBar />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

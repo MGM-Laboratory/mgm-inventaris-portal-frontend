@@ -83,8 +83,7 @@ menyediakannya.
 
 ## Menyambungkan ke sistem nyata
 
-Semua baca dan tulis data ada di `src/lib/store.ts`. Ganti isinya dengan
-panggilan ke backend portal (tiket dan aset). Daftar barang
+Semua baca dan tulis data masih ada di `src/lib/store.ts`, dan layar akan dipindah ke backend portal (tiket dan aset) satu per satu. Klien API ada di `src/lib/api/`. Tipe `schema.d.ts` dibuat dari `openapi.yaml` backend dengan `npx openapi-typescript@7.13.0 <jalur ke openapi.yaml> -o src/lib/api/schema.d.ts`. Jangan mengubahnya dengan tangan. Daftar barang
 dan jumlahnya di `src/lib/mock-data.ts` adalah klaim lab, bukan hasil audit.
 
 Aturan yang masih sementara dan perlu diputuskan: batas lama pinjam (sekarang
@@ -93,7 +92,7 @@ nomor tiket (`MGM-yymm-nnnn-XXXX`, dengan empat karakter acak di belakang).
 
 ## Konfigurasi
 
-Prototipe ini tidak membaca variabel lingkungan dan tidak punya berkas `.env`. Semua pengaturan ada di kode. Pengaturan seperti alamat backend ditambahkan saat backend tersambung.
+Aplikasi ini hanya membaca satu variabel lingkungan, `DEV_API_URL`, dan hanya saat `npm run dev`. Nilainya alamat backend untuk proksi `/api/*` dan bawaannya `http://localhost:8080`. Di produksi, nginx yang memberi halaman dan API satu asal, jadi tidak ada pengaturan alamat. Untuk mencoba tanpa HTTPS, jalankan backend dengan `ENVIRONMENT=development`, `SECURE_COOKIE=false` dan `PUBLIC_BASE_URL=http://localhost:3004`.
 
 ## Dokumentasi
 
