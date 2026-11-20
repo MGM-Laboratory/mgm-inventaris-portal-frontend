@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.0](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.1.2...v0.2.0) (2026-11-20)
+
+
+### Features
+
+* **docker:** add the production Dockerfile, the health route and the standalone output ([6593963](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/65939631badc340b8efba9d4765b3bc2f263ad1d))
+* **docker:** add the production image of the frontend ([856be35](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/856be35bae2096e34be9f20d321f0b3b9049e788))
+* **forms:** add the honeypot field to the guest sign in and the request form ([d8aabfc](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/d8aabfcaa6b54cebee0e8fd3b17b78cf8ca6578d))
+* **forms:** prepare the forms and dates for the API contract ([39ca2fd](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/39ca2fd68b196b5be4db3581e80357f27418d793))
+
+
+### Bug Fixes
+
+* **dates:** read the year, month and day of today from one clock sample ([8473fc6](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/8473fc6f8f7f2a62a81c65b72be94bb212109403))
+* **dates:** use the Jakarta date for today and compute the due date in UTC ([e98fffd](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/e98fffdc2b23e7fab99f510d11b9dd030cb40dee))
+* **docker:** merge the two RUN lines of the runtime stage and note the font download ([b0992b4](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/b0992b43ab5944c8e7104263f9f838b011da6ce2))
+* **forms:** guard bad dates, keep the caret in the ticket field and harden the honeypot ([176239e](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/176239efba6289702c24466f2eb087eaf954b46a))
+* **lacak:** uppercase the ticket number as it is typed ([6b2adf0](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/6b2adf022f0ff5cca25cd5b6c306cd7f3c6ba4be))
+
 ## [0.1.2](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.1.1...v0.1.2) (2026-11-16)
 
 
