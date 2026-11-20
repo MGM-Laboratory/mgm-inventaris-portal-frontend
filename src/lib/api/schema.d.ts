@@ -263,7 +263,7 @@ export interface paths {
         put?: never;
         /**
          * Cancel a ticket
-         * @description A guest session can cancel a ticket of the session in the status `diajukan`. A second cancel of a ticket that is already `dibatalkan` answers 200 with the ticket and changes nothing. The status check runs before the version check, so the retry of a lost answer works with the old `version`, and the note of the second cancel is not stored. Any other status answers 409 with the code `status_conflict`. The request has no body.
+         * @description A guest session can cancel a ticket of the session in the status `diajukan`. The request has no body and no version, because only the status of the ticket decides. A second cancel of a ticket that is already `dibatalkan` answers 200 with the ticket and changes nothing, so a caller that lost the answer sends the same request again. Any other status answers 409 with the code `status_conflict`.
          */
         post: operations["cancelTicket"];
         delete?: never;
@@ -603,7 +603,7 @@ export interface paths {
         put?: never;
         /**
          * Change the lifecycle of a unit
-         * @description An admin session can call it. The change writes an event in the history of the unit. The allowed changes are these. From `active` to `maintenance`, `lost` or `retired`. From `maintenance` to `active`, `lost` or `retired`. From `lost` to `active` or `retired`. Every change to `active` answers 409 with the code `status_conflict` while the model of the unit is retired. Any other change answers 409 with the code `status_conflict`. A unit in an open ticket cannot leave `active`, and the service answers 409 with the code `unit_held`. A change that would leave less stock than is held answers 409 with the code `stock_changed`.
+         * @description An admin session can call it. The change writes an event in the history of the unit. The allowed changes are these. From `active` to `maintenance`, `lost` or `retired`. From `maintenance` to `active`, `lost` or `retired`. From `lost` to `active` or `retired`. From `retired` to `active`. Every change to `active` answers 409 with the code `status_conflict` while the model of the unit is retired. Any other change answers 409 with the code `status_conflict`. A unit in an open ticket cannot leave `active`, and the service answers 409 with the code `unit_held`. A change that would leave less stock than is held answers 409 with the code `stock_changed`.
          */
         post: operations["changeUnitLifecycle"];
         delete?: never;
@@ -774,9 +774,8 @@ export interface components {
         };
         /** @description An opaque value that the service made. Send it back unchanged. */
         Cursor: string;
-        /** @description The shape of every list answer. A typed page below adds the type of its items. */
+        /** @description The pagination fields of every list answer. A typed page below adds the required `items` array with the type of its items. */
         Page: {
-            items: Record<string, never>[];
             /** @description The number of all items that match the query, and not only the items of this page. */
             total: number;
             nextCursor?: components["schemas"]["Cursor"];
@@ -965,7 +964,7 @@ export interface components {
             tone: components["schemas"]["Tone"];
         };
         CategoryPage: components["schemas"]["Page"] & {
-            items?: components["schemas"]["Category"][];
+            items: components["schemas"]["Category"][];
         };
         /** @description A kind of item with its quantities. The available quantity is never negative. */
         CatalogModel: {
@@ -984,7 +983,7 @@ export interface components {
             available: number;
         };
         CatalogPage: components["schemas"]["Page"] & {
-            items?: components["schemas"]["CatalogModel"][];
+            items: components["schemas"]["CatalogModel"][];
         };
         /** @description A model as an admin sees it. */
         Model: components["schemas"]["CatalogModel"] & {
@@ -1000,7 +999,7 @@ export interface components {
             retiredAt: string | null;
         };
         ModelPage: components["schemas"]["Page"] & {
-            items?: components["schemas"]["Model"][];
+            items: components["schemas"]["Model"][];
         };
         /** @description A category that the service creates together with the model. A name that already exists, ignoring letter case, reuses the existing category and does not fail. The submitted tone is ignored then. */
         NewCategory: {
@@ -1008,21 +1007,31 @@ export interface components {
             name: string;
             tone: components["schemas"]["Tone"];
         };
-        /** @description A new model. The body has exactly one of `categoryId` and `newCategory`. A body with both or with neither fails the rule. */
-        ModelInput: {
+        /** @description The fields that every new model has. */
+        ModelInputBase: {
             /** @description A name that no other model has, ignoring letter case. A repeat answers 409 with the code `duplicate`. */
             name: string;
-            /**
-             * Format: uuid
-             * @description The identifier of an existing category.
-             */
-            categoryId?: string;
-            newCategory?: components["schemas"]["NewCategory"];
             /** @default  */
             description: string;
             /** @description The part of the unit tags of this model, for example `VRQ` for `MGM-VRQ-001`. A prefix that another model uses, ignoring letter case, answers 409 with the code `duplicate`. */
             prefix: string;
-        } & (unknown | unknown);
+        };
+        /** @description A new model in an existing category. The body must not hold `newCategory`. */
+        ModelInputInCategory: components["schemas"]["ModelInputBase"] & {
+            /**
+             * Format: uuid
+             * @description The identifier of an existing category.
+             */
+            categoryId: string;
+            newCategory?: never;
+        };
+        /** @description A new model with a new category. The body must not hold `categoryId`. */
+        ModelInputNewCategory: components["schemas"]["ModelInputBase"] & {
+            newCategory: components["schemas"]["NewCategory"];
+            categoryId?: never;
+        };
+        /** @description A new model. The body has exactly one of `categoryId` and `newCategory`. A body with both or with neither fails the rule. */
+        ModelInput: components["schemas"]["ModelInputInCategory"] | components["schemas"]["ModelInputNewCategory"];
         /** @description The fields to change. A model cannot change its prefix. Setting `retired` to true answers 409 with the code `status_conflict` while a ticket in the status `diajukan`, `disetujui`, `siap_diambil` or `dipinjam` asks for the model. */
         ModelPatch: {
             name?: string;
@@ -1066,7 +1075,7 @@ export interface components {
             createdAt: string;
         };
         UnitPage: components["schemas"]["Page"] & {
-            items?: components["schemas"]["Unit"][];
+            items: components["schemas"]["Unit"][];
         };
         UnitList: {
             items: components["schemas"]["Unit"][];
@@ -1105,7 +1114,7 @@ export interface components {
             ticketNumber: string | null;
         };
         UnitEventPage: components["schemas"]["Page"] & {
-            items?: components["schemas"]["UnitEvent"][];
+            items: components["schemas"]["UnitEvent"][];
         };
         /** @description The model of a unit with its category and its available quantity. */
         AssetModelSummary: {
@@ -1232,7 +1241,7 @@ export interface components {
             note: string | null;
         };
         TicketEventPage: components["schemas"]["Page"] & {
-            items?: components["schemas"]["TicketEvent"][];
+            items: components["schemas"]["TicketEvent"][];
         };
         /** @description A unit that a ticket really holds. */
         TicketUnit: {
@@ -1249,7 +1258,7 @@ export interface components {
             units: components["schemas"]["TicketUnit"][];
         };
         TicketPage: components["schemas"]["Page"] & {
-            items?: components["schemas"]["Ticket"][];
+            items: components["schemas"]["Ticket"][];
         };
         ApprovedItem: {
             /** Format: uuid */
