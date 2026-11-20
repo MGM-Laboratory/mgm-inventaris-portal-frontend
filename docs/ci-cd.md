@@ -13,6 +13,7 @@ The portal is not deployed from this repository yet. The `Dockerfile` builds the
 | Security       | Pull request, push to `main`, Mondays 03:00 UTC, manual | CodeQL, dependency review (pull requests only), gitleaks and a Trivy filesystem scan. Gitleaks, dependency review and Trivy fail on a finding. Trivy fails on a CRITICAL or HIGH finding and also sends its findings to code scanning. CodeQL sends its findings to code scanning and fails only when the tool itself fails. OSSF Scorecard runs on the schedule and by hand. The job `Security gate` summarizes the run. |
 | Docker | Pull request, push to `main`, tags `v*.*.*`, manual | Builds the image of the `Dockerfile` for amd64 and arm64 (amd64 only on a pull request), pushes it to GitHub Container Registry by digest, joins the platforms under the tags, scans it with Trivy, attaches a CycloneDX SBOM attestation and signs it with cosign (keyless, classic `.sig` format). A pull request from a fork or from Dependabot only builds. |
 | Docker Hub mirror | After the `Docker` workflow finishes on `main` or on a tag | Copies the signed image from GitHub Container Registry to Docker Hub as `<user>/mgm-inventaris-portal-frontend`, by digest, with the same tags and the same signature. It copies only after `cosign verify` accepts the signature of `docker.yaml` on `main` or on a release tag, and never copies an image of a pull request. |
+| Re-sign image | Manual, from `main` only | Signs an image that is already published, by its version such as `0.3.0`. It checks that the digest is the same on GitHub Container Registry and on Docker Hub (when `DOCKERHUB_USERNAME` is set) and that `docker.yaml` built it for that release tag (`gh attestation verify`), then signs the image with cosign keyless and verifies the signature. A re-signed image carries the signature of `docker.yaml` and one of `resign.yaml@refs/heads/main`. |
 | Commit messages | Pull request                                         | Runs commitlint on every commit and checks that the title follows Conventional Commits. The job is named `Conventional commits`. |
 | Release Please | Push to `main`, manual | Opens and updates the release pull request, and creates the tag `vX.Y.Z` and the GitHub release when that pull request is merged. The job `Release PR and tag` builds a token from the release GitHub App `syafa-bot`. |
 | Pull request format | Pull request | Checks the branch name, the label, the assignee, that the body holds only bullets and that the bullets match the commits, not counting merge commits. The job is named `PR format`. |
@@ -58,5 +59,5 @@ Renovate opens the pull requests through the Mend Renovate GitHub app, which an 
 ## Not set up yet
 
 - Tests with coverage and Codecov. The repository has no test files yet.
-- The re-sign workflow and the repeatable build check.
+- The repeatable build check.
 - Prose linting, Lighthouse and browser tests.
