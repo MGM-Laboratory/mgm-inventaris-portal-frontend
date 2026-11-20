@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.0](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.2.0...v0.3.0) (2026-11-20)
+
+
+### Features
+
+* **api:** add the typed API client and the dev proxy for the backend ([4db2fd4](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/4db2fd493edea06f5eb1c82216b2919452187fc0))
+* **api:** add the typed client, the error type, the session query and the query provider ([5c3a35c](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/5c3a35cb76bbf0f0908909f52a58516f66b38532))
+* **dev:** proxy /api to the backend in development and document the settings ([a96f06b](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/a96f06b1e2c759f1b39670dbbbe1dee00e1c57c4))
+
+
+### Bug Fixes
+
+* **api:** keep the original 403 when the token refresh fails, ignore malformed details and send lists comma separated ([a219081](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/a219081124d03c18363bb1289ba447fc1dd5f22d))
+* **api:** pin a release older than 7 days, parse only the token routes and harden the empty cases ([ed04655](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/ed04655a04f31eff1b9b1e41d64771770e2ae087))
+
 ## [0.2.0](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.1.2...v0.2.0) (2026-11-20)
 
 
