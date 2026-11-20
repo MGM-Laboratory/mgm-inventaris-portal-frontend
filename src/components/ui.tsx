@@ -82,7 +82,15 @@ export function Honeypot() {
     <div inert className="pointer-events-none absolute -left-[9999px] size-px overflow-hidden">
       <label>
         Website
-        <input type="text" name="website" defaultValue="" autoComplete="off" />
+        <input
+          type="text"
+          name="website"
+          defaultValue=""
+          tabIndex={-1}
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+        />
       </label>
     </div>
   );

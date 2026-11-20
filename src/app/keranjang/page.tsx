@@ -77,7 +77,7 @@ export default function KeranjangPage() {
     const next: Errors = {};
     if (purpose.trim().length < 5)
       next.purpose = "Tulis tujuan peminjaman dalam satu kalimat.";
-    if (!pickupDate || pickupDate < todayIso())
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(pickupDate) || pickupDate < todayIso())
       next.pickupDate = "Pilih tanggal ambil hari ini atau setelahnya.";
     const days = Number(durationDays);
     if (!Number.isInteger(days) || days < 1 || days > 30)

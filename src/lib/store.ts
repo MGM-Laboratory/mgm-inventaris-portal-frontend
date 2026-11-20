@@ -158,11 +158,21 @@ const RESERVING: TicketStatus[] = [
 
 /** Tanggal hari ini di Asia/Jakarta, karena aturan tanggal ambil memakai zona itu. */
 export function todayIso() {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date());
+  const part = (type: string) =>
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Jakarta",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+      .formatToParts(new Date())
+      .find((p) => p.type === type)?.value;
+  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
 export function endDateIso(t: Pick<Ticket, "pickupDate" | "durationDays" | "approvedDurationDays">) {
   const d = new Date(`${t.pickupDate}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return t.pickupDate;
   d.setUTCDate(d.getUTCDate() + (t.approvedDurationDays ?? t.durationDays));
   return d.toISOString().slice(0, 10);
 }
