@@ -112,6 +112,14 @@ jobs:
             exit 2
           fi
           export LC_ALL=C
+          # sha256sum escapes a name with a backslash or a newline, and the join below could not read such a line, so the check stops
+          for list in "$a" "$b"; do
+            unknown="$(grep -cvE '^([0-9a-f]{64}  \./|link  \./)' "$list" || true)"
+            if [ "$unknown" -gt 0 ]; then
+              echo "A file list holds ${unknown} lines that are not a hash or a link record, so the builds cannot be compared." | tee -a "$GITHUB_STEP_SUMMARY"
+              exit 2
+            fi
+          done
           tab=$(printf '\t')
           keyed() {
             sed -E -e "s/^([0-9a-f]{64})  \.\/(.*)$/\2${tab}\1/" -e "s/^link  \.\/(.*) -> (.*)$/\1${tab}link:\2/" "$1" | sort -t "$tab" -k1,1
