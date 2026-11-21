@@ -8,7 +8,7 @@ The portal is not deployed from this repository yet. The `Dockerfile` builds the
 
 | Workflow       | Triggers                                              | What it does                                                                                                                    |
 | -------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| CI             | Pull request, push to `main`, manual                  | Installs with `npm ci`, runs ESLint and the production build. The build also type checks. The job `CI gate` summarizes the run. |
+| CI             | Pull request, push to `main`, manual                  | Installs with `npm ci`, runs ESLint, the unit tests with coverage (uploaded to Codecov) and the production build. The build also type checks. The job `CI gate` summarizes the run. |
 | Config lint    | Pull request, push to `main`, manual                  | Actionlint, Zizmor, ShellCheck, Hadolint for the Dockerfile, ls-lint for file names and the Renovate validator. The job `Config gate` summarizes the run.                |
 | Security       | Pull request, push to `main`, Mondays 03:00 UTC, manual | CodeQL, dependency review (pull requests only), gitleaks and a Trivy filesystem scan. Gitleaks, dependency review and Trivy fail on a finding. Trivy fails on a CRITICAL or HIGH finding and also sends its findings to code scanning. CodeQL sends its findings to code scanning and fails only when the tool itself fails. OSSF Scorecard runs on the schedule and by hand. The job `Security gate` summarizes the run. |
 | Docker | Pull request, push to `main`, tags `v*.*.*`, manual | Builds the image of the `Dockerfile` for amd64 and arm64 (amd64 only on a pull request), pushes it to GitHub Container Registry by digest, joins the platforms under the tags, scans it with Trivy, attaches a CycloneDX SBOM attestation and signs it with cosign (keyless, classic `.sig` format). A pull request from a fork or from Dependabot only builds. |
@@ -59,5 +59,5 @@ Renovate opens the pull requests through the Mend Renovate GitHub app, which an 
 
 ## Not set up yet
 
-- Tests with coverage and Codecov. The repository has no test files yet.
+- Tests of the pages and components. The unit tests cover only `src/lib/api`, and the sample data store is not tested because the API replaces it.
 - Prose linting, Lighthouse and browser tests.
