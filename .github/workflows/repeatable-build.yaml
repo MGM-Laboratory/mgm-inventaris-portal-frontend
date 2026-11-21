@@ -92,7 +92,7 @@ jobs:
       # The pattern below lists the four files that hold them, and a difference anywhere else fails the check.
       #   prerender-manifest.json and server/preview-props.json hold the keys of the preview mode.
       #   server/server-reference-manifest.js and .json hold the encryption key of the Server Actions.
-      # A file is ignored as a whole, because only hashes are compared here. Two of these files also hold the route table and the
+      # A file is ignored as a whole, because only hashes are compared here. Three of these files also hold the route table or the
       # action map, so a real change in those is hidden by the ignore. This is an accepted limit. The ignored paths are always
       # printed in the summary, and the file lists in the artifact let a reader compare them by hand.
       # A listed path counts only when both builds have it as a regular file. A missing path or a symlink still fails the check.

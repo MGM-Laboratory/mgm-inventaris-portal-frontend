@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Prints one line for every file of an exported image filesystem, sorted by path. A regular file gives its SHA-256 and a symlink
-# gives its target, so the output does not depend on timestamps, owners or the order in which the files were written.
+# Prints one line for every file of an exported image filesystem, in three blocks of regular files, route payload files and
+# symlinks that the compare job sorts by path. A regular file gives its SHA-256 and a symlink gives its target, so the output does not depend on timestamps, owners or the order in which the files were written.
 # Usage: hash-image-files.sh <directory>
 set -euo pipefail
 
