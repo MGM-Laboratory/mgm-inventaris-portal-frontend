@@ -34,15 +34,16 @@ export function createApiClient({ baseUrl = "", fetch }: ClientInit = {}) {
       if (csrfToken && !readOnly.has(request.method)) request.headers.set("X-CSRF-Token", csrfToken);
       return request;
     },
-    async onResponse({ response, schemaPath }) {
+    async onResponse({ request, response, schemaPath }) {
       const json = (response.headers.get("Content-Type") ?? "").includes("application/json");
       if (response.ok && tokenPaths.has(schemaPath) && json) {
         const body = (await response.clone().json().catch(() => null)) as { csrfToken?: unknown } | null;
         if (typeof body?.csrfToken === "string") csrfToken = body.csrfToken;
       } else if (response.status === 403 && json) {
         const body = (await response.clone().json().catch(() => null)) as { error?: { code?: string } } | null;
-        // The refresh is a GET of the session route, so its own csrf_failed must not start another refresh
-        if (body?.error?.code === "csrf_failed" && schemaPath !== "/api/session") {
+        // The refresh is a GET of the session route, so its own csrf_failed must not start another refresh. DELETE has the same path.
+        const isRefresh = request.method === "GET" && schemaPath === "/api/session";
+        if (body?.error?.code === "csrf_failed" && !isRefresh) {
           try {
             // The next write then carries a fresh token. The answer of this call sets it through the branch above.
             await client.GET("/api/session");
