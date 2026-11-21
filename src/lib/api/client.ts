@@ -41,7 +41,8 @@ export function createApiClient({ baseUrl = "", fetch }: ClientInit = {}) {
         if (typeof body?.csrfToken === "string") csrfToken = body.csrfToken;
       } else if (response.status === 403 && json) {
         const body = (await response.clone().json().catch(() => null)) as { error?: { code?: string } } | null;
-        if (body?.error?.code === "csrf_failed") {
+        // The refresh is a GET of the session route, so its own csrf_failed must not start another refresh
+        if (body?.error?.code === "csrf_failed" && schemaPath !== "/api/session") {
           try {
             // The next write then carries a fresh token. The answer of this call sets it through the branch above.
             await client.GET("/api/session");

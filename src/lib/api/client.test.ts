@@ -70,6 +70,41 @@ describe("the CSRF token", () => {
     expect(writes.map((r) => r.headers.get("X-CSRF-Token"))).toEqual(["old-token", "token-2"]);
   });
 
+  it("is not refreshed for a 403 with another code", async () => {
+    const { api, requests } = setup(() => json({ error: { code: "forbidden", message: "No.", requestId: "r" } }, 403));
+    setCsrfToken("old-token");
+
+    const error = await unwrap(api.DELETE("/api/session")).catch((e) => e);
+    expect(error.code).toBe("forbidden");
+    expect(requests).toHaveLength(1);
+  });
+
+  it("is refreshed once when the session route itself answers csrf_failed", async () => {
+    const { api, requests } = setup(() => csrfFailed());
+    setCsrfToken("old-token");
+
+    const error = await unwrap(api.DELETE("/api/session")).catch((e) => e);
+    expect(error.code).toBe("csrf_failed");
+    expect(requests.map((r) => r.method)).toEqual(["DELETE", "GET"]);
+  });
+
+  it("is taken from the guest and admin sign in answers", async () => {
+    const { api, requests } = setup((request) => {
+      const path = new URL(request.url).pathname;
+      if (path === "/api/session/guest") return json(session("guest-token"), 201);
+      if (path === "/api/admin/session") return json({ ...session("admin-token"), kind: "admin" }, 201);
+      return new Response(null, { status: 204 });
+    });
+
+    await api.POST("/api/session/guest", { body: { name: "Example Borrower", nimNip: "000000000000000", email: "example@student.ub.ac.id" } });
+    await api.DELETE("/api/session");
+    await api.POST("/api/admin/session", { body: { email: "admin@example.org", password: "not-a-real-password" } });
+    await api.DELETE("/api/session");
+
+    const writes = requests.filter((r) => r.method === "DELETE");
+    expect(writes.map((r) => r.headers.get("X-CSRF-Token"))).toEqual(["guest-token", "admin-token"]);
+  });
+
   it("keeps the original 403 when the refresh fails", async () => {
     const { api } = setup((request) => {
       if (request.method === "GET") throw new TypeError("offline");
