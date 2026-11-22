@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.3.0...v0.3.1) (2026-11-22)
+
+
+### Bug Fixes
+
+* **api:** do not refresh the token again when the refresh itself answers csrf_failed, and test more routes ([1707259](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/1707259470ce005c1eb55fa0e4d3031b8a3e6f21))
+* **api:** skip only the GET of the session route when the refresh answers csrf_failed ([e48b75a](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/commit/e48b75a7f5616dc20a21a833f40c7dee8be5c59b))
+
 ## [0.3.0](https://github.com/MGM-Laboratory/mgm-inventaris-portal-frontend/compare/v0.2.0...v0.3.0) (2026-11-20)
 
 
