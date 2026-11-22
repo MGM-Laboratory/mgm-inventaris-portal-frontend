@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Written by the tests with coverage
+    "coverage/**",
     // Generated from openapi.yaml of the backend
     "src/lib/api/schema.d.ts",
   ]),

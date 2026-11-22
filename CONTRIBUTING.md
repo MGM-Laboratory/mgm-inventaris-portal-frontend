@@ -47,8 +47,12 @@ npm run dev -- -p 3004   # http://localhost:3004
 | `npm run build` | Build for production. This also type checks. |
 | `npm start`     | Serve the production build.                 |
 | `npm run lint`  | Run ESLint.                                 |
+| `npm test`      | Run the unit tests with Vitest.             |
+| `npm run test:cov` | Run the unit tests and write the coverage. |
 
 Node 24 (`.nvmrc`) is used in CI. Next.js 16 needs Node 20.9 or newer.
+
+A change to the code in `src/lib/api` adds or updates a unit test in the same pull request. The tests sit next to the code as `*.test.ts`, and CI uploads the coverage to Codecov.
 
 ## Commit messages
 

@@ -25,6 +25,7 @@ Untuk mencoba semua alurnya langkah demi langkah, ikuti [handson.md](handson.md)
 
 - Next.js 16 (App Router, Cache Components), React 19, TypeScript 5 dan Tailwind CSS 4.
 - Data contoh di `localStorage`, semua akses lewat `src/lib/store.ts`.
+- Tes unit dengan Vitest (`npm test`) untuk klien API di `src/lib/api`.
 - npm dan Node 24 (`.nvmrc`). Next.js 16 membutuhkan Node 20.9 atau lebih baru.
 - CI di GitHub Actions, lihat [`docs/ci-cd.md`](docs/ci-cd.md).
 
